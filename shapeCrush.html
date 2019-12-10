@@ -64,50 +64,41 @@ error.src = "error.wav";
 var oldScore = 0;
 var checkForMatchSuccess = false;
 var thereWasAMatch = false;
-
 function mouseMoveHandler(e) {
 	pX = e.clientX - canvas.offsetLeft;
 	pY = e.clientY - canvas.offsetTop;
 }
-
 function getPosition2(event) {
 	mouseIsDown = false;
 }
-
 function getPosition(event) {
 	mouseIsDown = true;
 }
-
 function getRandomInt(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
 function playSound1() {
 	var pop = new Audio();
 	pop.src = "d1.wav";
 	pop.play();
 }
-
 function playSound2() {
 	var pop = new Audio();
 	pop.src = "d2.wav";
 	pop.play();
 }
-
 function playSound3() {
 	var pop = new Audio();
 	pop.src = "d3.wav";
 	pop.play();
 }
-
 function playError() {
 	var pop = new Audio();
 	pop.src = "error.wav";
 	pop.play();
 }
-
 function gridObject(x, y, isSelected, value, isEmpty) {
 	this.x = x;
 	this.y = y;
@@ -115,7 +106,6 @@ function gridObject(x, y, isSelected, value, isEmpty) {
 	this.value = value;
 	this.isEmpty = isEmpty;
 }
-
 function fallingCol(startX, startY, data) {
 	this.x = startX;
 	this.y = startY;
@@ -160,7 +150,6 @@ function randArray() {
 		}
 	}
 }
-
 function drawGrid() {
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
@@ -175,7 +164,6 @@ function drawGrid() {
 		}
 	}
 }
-
 function collision() {
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
@@ -184,8 +172,7 @@ function collision() {
 				pY > (10 + (i * 60)) && pY < ((10 + (i * 60)) + 60)) {
 				if (mouseIsDown) {
 					randNums[i][j].isSelected = true;
-					//console.log("The value at " + i + " and  " + j + " is equal to: " +
-					// randNums[i][j].value);
+					//console.log("The value at " + i + " and  " + j + " is selected");
 					if (selected1Col == -1) {
 						selected1Row = i;
 						selected1Col = j;
@@ -194,8 +181,6 @@ function collision() {
 						selected2Col = j;
 						checkForMatchSuccess = true;
 					}
-
-
 					if (selected1Col > -1 && selected2Col > -1) {
 						if (selected1Col == selected2Col) {
 							if ((selected1Row == selected2Row + 1) ||
@@ -249,7 +234,6 @@ function collision() {
 		}
 	}
 }
-
 function checkForMatches() {
 	console.log("matchfound: " + matchFound);
 	if (matchFound) {
@@ -279,9 +263,12 @@ function checkForMatches() {
 					matchDown = true;
 					thereWasAMatch = true;
 					matchFound = true;
+					if(timeX<460-50)
+					{
+						timeX+=50;
+					}
 					//console.log("matchfound" + matchFound);
 				}
-
 			}
 		}
 	}
@@ -295,7 +282,7 @@ function checkForMatches() {
 					//we have a match of 5 down
 					//console.log("We have a 4 match down");
 					//console.log("Starting at i  j: " + i + "   " + j);
-					playSound3();
+					playSound2();
 					score += 20;
 					randNums[i][j].value = 0;
 					randNums[i + 1][j].value = 0;
@@ -307,13 +294,15 @@ function checkForMatches() {
 					matchDown = true;
 					thereWasAMatch = true;
 					matchFound = true;
+					if(timeX<460-25)
+					{
+						timeX+=25;
+					}
 					//console.log("matchfound" + matchFound);
 				}
-
 			}
 		}
 	}
-
 	if (noMatchFound) {
 		for (var i = 0; i < 6; i++) {
 			for (var j = 0; j < 8; j++) {
@@ -323,7 +312,7 @@ function checkForMatches() {
 					//we have a match of 5 down
 					//console.log("We have a 3 match down");
 					//console.log("Starting at i  j: " + i + "   " + j);
-					playSound2();
+					playSound1();
 					score += 10;
 					randNums[i][j].value = 0;
 					randNums[i + 1][j].value = 0;
@@ -334,13 +323,15 @@ function checkForMatches() {
 					matchDown = true;
 					thereWasAMatch = true;
 					matchFound = true;
+					if(timeX<460-15)
+					{
+						timeX+=15;
+					}
 					//console.log("matchfound" + matchFound);
 				}
-
 			}
 		}
 	}
-
 	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 4; j++) {
@@ -352,7 +343,7 @@ function checkForMatches() {
 					//we have a match of 5 across
 					//console.log("We have a 5 match across");
 					//console.log("Starting at i  j: " + i + "   " + j);
-					playSound2();
+					playSound3();
 					score += 30;
 					randNums[i][j].value = 0;
 					randNums[i][j + 1].value = 0;
@@ -366,12 +357,15 @@ function checkForMatches() {
 					matchAcross = true;
 					thereWasAMatch = true;
 					matchFound = true;
+					if(timeX<460-50)
+					{
+						timeX+=50;
+					}
 					//console.log("matchfound" + matchFound);
 				}
 			}
 		}
 	}
-
 	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 5; j++) {
@@ -382,7 +376,7 @@ function checkForMatches() {
 					//we have a match of 5 across
 					//console.log("We have a 4 match across");
 					//console.log("Starting at i  j: " + i + "   " + j);
-					playSound1();
+					playSound2();
 					score += 20;
 					randNums[i][j].value = 0;
 					randNums[i][j + 1].value = 0;
@@ -395,12 +389,15 @@ function checkForMatches() {
 					matchAcross = true;
 					thereWasAMatch = true;
 					matchFound = true;
+					if(timeX<460-25)
+					{
+						timeX+=25;
+					}
 					//console.log("matchfound" + matchFound);
 				}
 			}
 		}
 	}
-
 	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 6; j++) {
@@ -422,14 +419,16 @@ function checkForMatches() {
 					matchAcross = true;
 					thereWasAMatch = true;
 					matchFound = true;
+					if(timeX<460-15)
+					{
+						timeX+=15;
+					}
 					//console.log("matchfound" + matchFound);
 				}
 			}
 		}
 	}
-
 }
-
 function checkingForNegs() {
 	for (var i = 7; i >= 0; i--) {
 		for (var j = 7; j >= 0; j--) {
@@ -441,7 +440,6 @@ function checkingForNegs() {
 		}
 	}
 }
-
 function checkingForZeroes() {
 	for (var i = 7; i >= 0; i--) {
 		for (var j = 7; j >= 0; j--) {
@@ -453,7 +451,6 @@ function checkingForZeroes() {
 					count++;
 					tempI--;
 				}
-
 				var tempNums = [];
 				var indexToStartAdding = i - count;
 				var counter = 0;
@@ -472,7 +469,6 @@ function checkingForZeroes() {
 				if (matchDown) {
 					//console.log("was a match down");
 					while (tempI >= 0 && randNums[tempI][j].value == 0) {
-
 						randNums[tempI][j].value = -1;
 						count++;
 						tempI--;
@@ -495,7 +491,6 @@ function checkingForZeroes() {
 		}
 	}
 }
-
 function drawFallingCols() {
 	for (var i = 0; i < fallingCols.length; i++) {
 		for (var j = 0; j < fallingCols[i].nums.length; j++) {
@@ -546,7 +541,6 @@ function drawFallingCols() {
 		}
 	}
 }
-
 function drawBoard() {
 	var grd1 = ctx.createLinearGradient(10, 160, 150, 0);
 	grd1.addColorStop(0, "#0063EA");
@@ -555,23 +549,18 @@ function drawBoard() {
 	ctx.beginPath();
 	ctx.rect(0, 0, 800, 600);
 	ctx.fill();
-
 	ctx.fillStyle = "#DAF0FF"
 	ctx.beginPath();
 	ctx.rect(310, 10, 480, 480);
 	ctx.fill();
-
 	
-
 	
 	ctx.fillStyle = "#FFF33F";
 	ctx.font = "50px Times New Roman";
 	ctx.fillText("Clever Jewl", 30, 75);
-
 	ctx.fillStyle = "#FFF33F";
 	ctx.font = "50px Times New Roman";
 	ctx.fillText("Pun", 115, 120);
-
 	if(pX >= 50 && pX <= 250 && pY >= 150 && pY <= 200)
 	{
 		ctx.fillStyle = "#DAF0FF";
@@ -667,11 +656,8 @@ function drawBoard() {
 		ctx.fillText("Options", 100, 260);
 		ctx.beginPath();
 	}
-
 	
-
 	
-
 	var grd = ctx.createRadialGradient(150, 420, 90, 130, 60, 100);
 	grd.addColorStop(0, "#1C8EFF");
 	grd.addColorStop(1, "#88DAFF");
@@ -679,16 +665,13 @@ function drawBoard() {
 	ctx.beginPath();
 	ctx.arc(150, 375, 75, 0, 2 * Math.PI);
 	ctx.fill();
-
 	ctx.fillStyle = "black"
 	ctx.font = "30px Times New Roman";
 	ctx.fillText(score, 125, 380);
-
 	ctx.beginPath();
 	ctx.arc(150, 375, 75, 0, 2 * Math.PI);
 	ctx.stroke();
 }
-
 function time() {
 	if (timeX < 100) {
 		if (counter2 > 45) {
@@ -713,20 +696,15 @@ function time() {
 	ctx.beginPath();
 	ctx.rect(320, 540, timeX, 20);
 	ctx.fill();
-
 	ctx.fillStyle = "#FFF33F";
 	ctx.font = "30px Times New Roman";
 	ctx.fillText("Time:", 320, 535);
 	ctx.beginPath();
-
 	ctx.beginPath();
 	ctx.rect(320, 540, timeX, 20);
 	ctx.stroke();
-
 }
-
 function draw() {
-
 	while (loading) {
 		oldScore = score;
 		//console.log("Loading....");
