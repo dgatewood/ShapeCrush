@@ -1,0 +1,759 @@
+<html>
+<head>
+<style>
+*{padding: 0; margin:0;}
+canvas{ background: #F5F5F5; display: block; margin: 0 auto;}
+</style>
+</head>
+<body>
+<canvas id= "myCanvas" width="800" height= "600"></canvas>
+<script type="text/javascript">
+//Dis is da code!!
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+document.addEventListener("mousemove", mouseMoveHandler, false);
+document.addEventListener("mousedown", getPosition, false);
+document.addEventListener("mouseup", getPosition2, false);
+var timeX = 460;
+var randNum3 = 0;
+var randStringNum = "";
+var color = "";
+var counter = 0;
+var counter2 = 0;
+var pX = 0;
+var pY = 0;
+var mouseIsDown = false;
+var score = 0;
+var checkForZeroes = false;
+var fallingCols = [];
+var selected1Row = -1;
+var selected2Row = -1;
+var selected1Col = -1;
+var selected2Col = -1;
+var selected1RowTemp = -1;
+var selected2RowTemp = -1;
+var selected1ColTemp = -1;
+var selected2ColTemp = -1;
+var loading = true;
+var loadTimer = 0;
+var isFalling = false;
+var wasAMatch = false;
+var anErrorOccurred = false;
+var noMatchFound = true;
+var matchAcross = false;
+var matchDown = false;
+var matchFound = false;
+var s1 = new Image();
+s1.src = "s1.png";
+var s2 = new Image();
+s2.src = "s2.png";
+var s3 = new Image();
+s3.src = "s3.png";
+var s4 = new Image();
+s4.src = "s4.png";
+var s5 = new Image();
+s5.src = "s5.png";
+var d1 = new Audio();
+d1.src = "d1.wav";
+var d2 = new Audio();
+d2.src = "d2.wav";
+var d3 = new Audio();
+d3.src = "d3.wav";
+var error = new Audio();
+error.src = "error.wav";
+var oldScore = 0;
+var checkForMatchSuccess = false;
+var thereWasAMatch = false;
+
+function mouseMoveHandler(e) {
+	pX = e.clientX - canvas.offsetLeft;
+	pY = e.clientY - canvas.offsetTop;
+}
+
+function getPosition2(event) {
+	mouseIsDown = false;
+}
+
+function getPosition(event) {
+	mouseIsDown = true;
+}
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function playSound1() {
+	var pop = new Audio();
+	pop.src = "d1.wav";
+	pop.play();
+}
+
+function playSound2() {
+	var pop = new Audio();
+	pop.src = "d2.wav";
+	pop.play();
+}
+
+function playSound3() {
+	var pop = new Audio();
+	pop.src = "d3.wav";
+	pop.play();
+}
+
+function playError() {
+	var pop = new Audio();
+	pop.src = "error.wav";
+	pop.play();
+}
+
+function gridObject(x, y, isSelected, value, isEmpty) {
+	this.x = x;
+	this.y = y;
+	this.isSelected = isSelected;
+	this.value = value;
+	this.isEmpty = isEmpty;
+}
+
+function fallingCol(startX, startY, data) {
+	this.x = startX;
+	this.y = startY;
+	this.nums = data;
+	this.stopIt = 31;
+	this.startIt = 0;
+}
+var randNums = [];
+for (var i = 0; i < 8; i++) {
+	randNums[i] = [];
+	for (var j = 0; j < 8; j++) {
+		var v = getRandomInt(1, 5);
+		var x = (345 + (i * 60));
+		var y = (40 + (j * 60));
+		randNums[i][j] = new gridObject(x, y, false, v, false);
+	}
+}
+//console.log("The value of randNums[7][7] is: " + randNums[7][7].value);
+function randArray() {
+	for (var i = 0; i < 8; i++) {
+		for (var j = 0; j < 8; j++) {
+			var x = (315 + (j * 60));
+			var y = (15 + (i * 60));
+			ctx.fillStyle = "#000000";
+			ctx.font = "30px Times New Roman";
+			//ctx.fillText(randNums[i][j].value, x, y);
+			if (randNums[i][j].value == 1) {
+				ctx.drawImage(s1, x, y);
+			}
+			if (randNums[i][j].value == 2) {
+				ctx.drawImage(s2, x, y);
+			}
+			if (randNums[i][j].value == 3) {
+				ctx.drawImage(s3, x, y);
+			}
+			if (randNums[i][j].value == 4) {
+				ctx.drawImage(s4, x, y);
+			}
+			if (randNums[i][j].value == 5) {
+				ctx.drawImage(s5, x, y);
+			}
+		}
+	}
+}
+
+function drawGrid() {
+	for (var i = 0; i < 8; i++) {
+		for (var j = 0; j < 8; j++) {
+			if (randNums[i][j].isSelected) {
+				ctx.fillStyle = "rgb(255,255,255)";
+				ctx.fillRect((310 + (j * 60)), (10 + (i * 60)), 60, 60);
+			}
+			ctx.strokeStyle = "rgb(0,0,0)"
+			ctx.rect((310 + (j * 60)), (10 + (i * 60)), 60, 60);
+			ctx.stroke();
+			//ctx.strokeStyle = "rgb(255,255,255)"
+		}
+	}
+}
+
+function collision() {
+	for (var i = 0; i < 8; i++) {
+		for (var j = 0; j < 8; j++) {
+			///ctx.rect((310 + (j*60)),(10 + (i*60)),(60),(60));
+			if (pX > (310 + (j * 60)) && pX < ((310 + (j * 60)) + 60) &&
+				pY > (10 + (i * 60)) && pY < ((10 + (i * 60)) + 60)) {
+				if (mouseIsDown) {
+					randNums[i][j].isSelected = true;
+					//console.log("The value at " + i + " and  " + j + " is equal to: " +
+					// randNums[i][j].value);
+					if (selected1Col == -1) {
+						selected1Row = i;
+						selected1Col = j;
+					} else if (selected1Row == i && selected1Col == j) {} else {
+						selected2Row = i;
+						selected2Col = j;
+						checkForMatchSuccess = true;
+					}
+
+
+					if (selected1Col > -1 && selected2Col > -1) {
+						if (selected1Col == selected2Col) {
+							if ((selected1Row == selected2Row + 1) ||
+								(selected1Row == selected2Row - 1)) {
+								var tempVal = randNums[selected1Row][selected1Col].value;
+								randNums[selected1Row][selected1Col].value =
+									randNums[selected2Row][selected2Col].value;
+								randNums[selected2Row][selected2Col].value = tempVal;
+							}
+						} else if (selected1Row == selected2Row) {
+							if ((selected1Col == selected2Col + 1) ||
+								(selected1Col == selected2Col - 1)) {
+								var tempVal = randNums[selected1Row][selected1Col].value;
+								randNums[selected1Row][selected1Col].value =
+									randNums[selected2Row][selected2Col].value;
+								randNums[selected2Row][selected2Col].value = tempVal;
+							}
+						}
+						checkForMatches();
+						if (!matchFound) {
+							console.log("match not found");
+							playError();
+							if (selected1Col == selected2Col) {
+								if ((selected1Row == selected2Row + 1) ||
+									(selected1Row == selected2Row - 1)) {
+									console.log("error");
+									var tempVal = randNums[selected2Row][selected2Col].value;
+									randNums[selected2Row][selected2Col].value =
+										randNums[selected1Row][selected1Col].value;
+									randNums[selected1Row][selected1Col].value = tempVal;
+								}
+							} else if (selected1Row == selected2Row) {
+								if ((selected1Col == selected2Col + 1) ||
+									(selected1Col == selected2Col - 1)) {
+									var tempVal = randNums[selected2Row][selected2Col].value;
+									randNums[selected2Row][selected2Col].value =
+										randNums[selected1Row][selected1Col].value;
+									randNums[selected1Row][selected1Col].value = tempVal;
+								}
+							}
+						}
+						randNums[selected1Row][selected1Col].isSelected = false;
+						randNums[selected2Row][selected2Col].isSelected = false;
+						selected1Row = -1;
+						selected1Col = -1;
+						selected2Row = -1;
+						selected2Col = -1;
+					}
+				}
+			}
+		}
+	}
+}
+
+function checkForMatches() {
+	console.log("matchfound: " + matchFound);
+	if (matchFound) {
+		matchFound = false;
+	}
+	if (noMatchFound) {
+		for (var i = 0; i < 4; i++) {
+			for (var j = 0; j < 8; j++) {
+				if (randNums[i][j].value === randNums[i + 1][j].value &&
+					randNums[i][j].value === randNums[i + 2][j].value &&
+					randNums[i][j].value === randNums[i + 3][j].value &&
+					randNums[i][j].value === randNums[i + 4][j].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 5 down
+					//console.log("We have a 5 match down");
+					//console.log("Starting at i  j: " + i + "   " + j);
+					playSound3();
+					score += 30;
+					randNums[i][j].value = 0;
+					randNums[i + 1][j].value = 0;
+					randNums[i + 2][j].value = 0;
+					randNums[i + 3][j].value = 0;
+					randNums[i + 4][j].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					//console.log("matchfound" + matchFound);
+				}
+
+			}
+		}
+	}
+	if (noMatchFound) {
+		for (var i = 0; i < 5; i++) {
+			for (var j = 0; j < 8; j++) {
+				if (randNums[i][j].value === randNums[i + 1][j].value &&
+					randNums[i][j].value === randNums[i + 2][j].value &&
+					randNums[i][j].value === randNums[i + 3][j].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 5 down
+					//console.log("We have a 4 match down");
+					//console.log("Starting at i  j: " + i + "   " + j);
+					playSound3();
+					score += 20;
+					randNums[i][j].value = 0;
+					randNums[i + 1][j].value = 0;
+					randNums[i + 2][j].value = 0;
+					randNums[i + 3][j].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					//console.log("matchfound" + matchFound);
+				}
+
+			}
+		}
+	}
+
+	if (noMatchFound) {
+		for (var i = 0; i < 6; i++) {
+			for (var j = 0; j < 8; j++) {
+				if (randNums[i][j].value === randNums[i + 1][j].value &&
+					randNums[i][j].value === randNums[i + 2][j].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 5 down
+					//console.log("We have a 3 match down");
+					//console.log("Starting at i  j: " + i + "   " + j);
+					playSound2();
+					score += 10;
+					randNums[i][j].value = 0;
+					randNums[i + 1][j].value = 0;
+					randNums[i + 2][j].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					//console.log("matchfound" + matchFound);
+				}
+
+			}
+		}
+	}
+
+	if (noMatchFound) {
+		for (var i = 0; i < 8; i++) {
+			for (var j = 0; j < 4; j++) {
+				if (randNums[i][j].value === randNums[i][j + 1].value &&
+					randNums[i][j].value === randNums[i][j + 2].value &&
+					randNums[i][j].value === randNums[i][j + 3].value &&
+					randNums[i][j].value === randNums[i][j + 4].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 5 across
+					//console.log("We have a 5 match across");
+					//console.log("Starting at i  j: " + i + "   " + j);
+					playSound2();
+					score += 30;
+					randNums[i][j].value = 0;
+					randNums[i][j + 1].value = 0;
+					randNums[i][j + 2].value = 0;
+					randNums[i][j + 3].value = 0;
+					randNums[i][j + 4].value = 0;
+					checkForZeroes = true;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchAcross = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					//console.log("matchfound" + matchFound);
+				}
+			}
+		}
+	}
+
+	if (noMatchFound) {
+		for (var i = 0; i < 8; i++) {
+			for (var j = 0; j < 5; j++) {
+				if (randNums[i][j].value === randNums[i][j + 1].value &&
+					randNums[i][j].value === randNums[i][j + 2].value &&
+					randNums[i][j].value === randNums[i][j + 3].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 5 across
+					//console.log("We have a 4 match across");
+					//console.log("Starting at i  j: " + i + "   " + j);
+					playSound1();
+					score += 20;
+					randNums[i][j].value = 0;
+					randNums[i][j + 1].value = 0;
+					randNums[i][j + 2].value = 0;
+					randNums[i][j + 3].value = 0;
+					checkForZeroes = true;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchAcross = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					//console.log("matchfound" + matchFound);
+				}
+			}
+		}
+	}
+
+	if (noMatchFound) {
+		for (var i = 0; i < 8; i++) {
+			for (var j = 0; j < 6; j++) {
+				if (randNums[i][j].value === randNums[i][j + 1].value &&
+					randNums[i][j].value === randNums[i][j + 2].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 5 across
+					//console.log("We have a 3 match across");
+					//console.log("Starting at i  j: " + i + "   " + j);
+					playSound1();
+					score += 10;
+					randNums[i][j].value = 0;
+					randNums[i][j + 1].value = 0;
+					randNums[i][j + 2].value = 0;
+					checkForZeroes = true;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchAcross = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					//console.log("matchfound" + matchFound);
+				}
+			}
+		}
+	}
+
+}
+
+function checkingForNegs() {
+	for (var i = 7; i >= 0; i--) {
+		for (var j = 7; j >= 0; j--) {
+			if (randNums[i][j].value == -1) {
+				//console.log("A negative was left behind after setting values....");
+				//console.log("This value was at " + i + "  and " + j);
+				//anErrorOccurred = true;
+			}
+		}
+	}
+}
+
+function checkingForZeroes() {
+	for (var i = 7; i >= 0; i--) {
+		for (var j = 7; j >= 0; j--) {
+			if (randNums[i][j].value == 0) {
+				var count = 0;
+				var tempI = i;
+				while (tempI >= 0 && randNums[tempI][j].value == 0) {
+					//console.log("Temp i is: " + tempI);
+					count++;
+					tempI--;
+				}
+
+				var tempNums = [];
+				var indexToStartAdding = i - count;
+				var counter = 0;
+				while (counter <= indexToStartAdding) {
+					tempNums.push(randNums[indexToStartAdding - counter][j].value);
+					counter++;
+				}
+				counter = 0;
+				while (counter < count) {
+					tempNums.push(getRandomInt(1, 5));
+					counter++;
+				}
+				fallingCols.push(new fallingCol(i, j, tempNums));
+				count = 0;
+				tempI = i;
+				if (matchDown) {
+					//console.log("was a match down");
+					while (tempI >= 0 && randNums[tempI][j].value == 0) {
+
+						randNums[tempI][j].value = -1;
+						count++;
+						tempI--;
+					}
+				}
+				if (matchAcross) {
+					//console.log("was a match across");
+					randNums[tempI][j].value = -1;
+				}
+				//console.log("The count is: " + count);
+				//console.log("The size of tempNums is: " + tempNums.length);
+				//console.log("The values of tempNums is: " );
+				for (var a = 0; a < tempNums.length; a++) {
+					//console.log("Value at: " + a + "  is:  " + tempNums[a]);
+				}
+				//i = -1;
+				//j = -1;
+				wasAMatch = true;
+			}
+		}
+	}
+}
+
+function drawFallingCols() {
+	for (var i = 0; i < fallingCols.length; i++) {
+		for (var j = 0; j < fallingCols[i].nums.length; j++) {
+			if (fallingCols[i].startIt < 30) {
+				//var x = (340+(fallingCols[i].y * 60));
+				//var y = (-20+(fallingCols[i].x *60 - (j * 60))  + (fallingCols[i].startIt * 1));///real value is 2
+				var x = (315 + (fallingCols[i].y * 60));
+				var y = (-55 + (fallingCols[i].x * 60 - (j * 60)) + (fallingCols[i].startIt * 2));
+				ctx.fillStyle = "#000000";
+				ctx.font = "30px Times New Roman";
+				//ctx.fillText(fallingCols[i].nums[j], x, y);
+				if (fallingCols[i].nums[j] == 1) {
+					ctx.drawImage(s1, x, y);
+				}
+				if (fallingCols[i].nums[j] == 2) {
+					ctx.drawImage(s2, x, y);
+				}
+				if (fallingCols[i].nums[j] == 3) {
+					ctx.drawImage(s3, x, y);
+				}
+				if (fallingCols[i].nums[j] == 4) {
+					ctx.drawImage(s4, x, y);
+				}
+				if (fallingCols[i].nums[j] == 5) {
+					ctx.drawImage(s5, x, y);
+				}
+			}
+		}
+		fallingCols[i].startIt += 1;
+		if (fallingCols[i].startIt == fallingCols[i].stopIt) {
+			//console.log("The length of fallingCols[" + i + "].nums.length: " + fallingCols[i].nums.length);
+			for (var j = 0; j < fallingCols[i].nums.length; j++) {
+				//console.log("The value fo fallingCols at j : " + fallingCols[i].nums[j]);
+				randNums[fallingCols[i].x - j][fallingCols[i].y].value = fallingCols[i].nums[j];
+				//fallingCols[j].nums.pop();
+				//console.log("Index " + (fallingCols[i].x - j) + " and " + fallingCols[i].y +
+				//" is given a value of: " + fallingCols[i].nums[j]);
+			}
+			//fallingCols.splice(i,1);
+			checkingForNegs();
+			wasAMatch = false;
+			noMatchFound = true;
+			matchAcross = false;
+			matchDown = false;
+		}
+		if (fallingCols[i].startIt > 500) {
+			fallingCols.splice(i, 1);
+		}
+	}
+}
+
+function drawBoard() {
+	var grd1 = ctx.createLinearGradient(10, 160, 150, 0);
+	grd1.addColorStop(0, "#0063EA");
+	grd1.addColorStop(1, "#1477FF");
+	ctx.fillStyle = grd1;
+	ctx.beginPath();
+	ctx.rect(0, 0, 800, 600);
+	ctx.fill();
+
+	ctx.fillStyle = "#DAF0FF"
+	ctx.beginPath();
+	ctx.rect(310, 10, 480, 480);
+	ctx.fill();
+
+	
+
+	
+	ctx.fillStyle = "#FFF33F";
+	ctx.font = "50px Times New Roman";
+	ctx.fillText("Clever Jewl", 30, 75);
+
+	ctx.fillStyle = "#FFF33F";
+	ctx.font = "50px Times New Roman";
+	ctx.fillText("Pun", 115, 120);
+
+	if(pX >= 50 && pX <= 250 && pY >= 150 && pY <= 200)
+	{
+		ctx.fillStyle = "#DAF0FF";
+		ctx.beginPath();
+		ctx.fillRect(50, 150, 200, 50);
+		ctx.rect(50, 150, 200, 50);
+		ctx.stroke();
+		ctx.fillStyle = "black"
+		ctx.font = "30px Times New Roman";
+		ctx.fillText("New Game", 75, 185);
+		if(mouseIsDown)
+		{
+			score = 0;
+			timeX = 460;
+			for (var i = 0; i < 8; i++) {
+			for (var j = 0; j < 8; j++) {
+				var v = getRandomInt(1, 5);
+				var x = (345 + (i * 60));
+				var y = (40 + (j * 60));
+				randNums[i][j] = new gridObject(x, y, false, v, false);
+			}
+			}
+		}
+	}
+	else
+	{
+		ctx.fillStyle = "#0063EA";
+		ctx.beginPath();
+		ctx.fillRect(50, 150, 200, 50);
+		ctx.rect(50, 150, 200, 50);
+		ctx.stroke();
+		ctx.fillStyle = "black"
+		ctx.font = "30px Times New Roman";
+		ctx.fillText("New Game", 75, 185);
+		ctx.beginPath();
+	}
+	
+	
+	if(pX >= 50 && pX <= 250 && pY >= 475 && pY <= 525)
+	{
+		ctx.fillStyle = "#DAF0FF";
+		ctx.beginPath();
+		ctx.fillRect(50, 475, 200, 50);
+		ctx.rect(50, 475, 200, 50);
+		ctx.stroke();
+		ctx.fillStyle = "black"
+		ctx.font = "30px Times New Roman";
+		ctx.fillText("Quit Game", 85, 510);
+		ctx.beginPath();
+		if(mouseIsDown)
+		{
+			window.close();
+		}
+	}
+	else
+	{
+		ctx.fillStyle = "#0063EA";
+		ctx.beginPath();
+		ctx.fillRect(50, 475, 200, 50);
+		ctx.rect(50, 475, 200, 50);
+		ctx.stroke();
+		ctx.fillStyle = "black"
+		ctx.font = "30px Times New Roman";
+		ctx.fillText("Quit Game", 85, 510);
+		ctx.beginPath();
+	}
+	
+	if(pX >= 50 && pX <= 250 && pY >= 225 && pY <= 275)
+	{
+		ctx.fillStyle = "#DAF0FF";
+		ctx.beginPath();
+		ctx.fillRect(50, 225, 200, 50);
+		ctx.rect(50, 225, 200, 50);
+		ctx.stroke();
+		ctx.fillStyle = "black"
+		ctx.font = "30px Times New Roman";
+		ctx.fillText("Options", 100, 260);
+		ctx.beginPath();
+		if(mouseIsDown)
+		{
+		
+		}
+	}
+	else
+	{
+		ctx.fillStyle = "#0063EA";
+		ctx.beginPath();
+		ctx.fillRect(50, 225, 200, 50);
+		ctx.rect(50, 225, 200, 50);
+		ctx.stroke();
+		ctx.fillStyle = "black"
+		ctx.font = "30px Times New Roman";
+		ctx.fillText("Options", 100, 260);
+		ctx.beginPath();
+	}
+
+	
+
+	
+
+	var grd = ctx.createRadialGradient(150, 420, 90, 130, 60, 100);
+	grd.addColorStop(0, "#1C8EFF");
+	grd.addColorStop(1, "#88DAFF");
+	ctx.fillStyle = grd;
+	ctx.beginPath();
+	ctx.arc(150, 375, 75, 0, 2 * Math.PI);
+	ctx.fill();
+
+	ctx.fillStyle = "black"
+	ctx.font = "30px Times New Roman";
+	ctx.fillText(score, 125, 380);
+
+	ctx.beginPath();
+	ctx.arc(150, 375, 75, 0, 2 * Math.PI);
+	ctx.stroke();
+}
+
+function time() {
+	if (timeX < 100) {
+		if (counter2 > 45) {
+			counter2 = 1;
+		} else if (counter2 > 30) {
+			color = "#ff9100";
+		} else if (counter2 > 15) {
+			color = "#ff0044";
+		}
+		counter2++;
+	} else if (counter > 360) {
+		counter = 1;
+	} else if (counter > 240) {
+		color = "#47ff26";
+	} else if (counter > 120) {
+		color = "#af10ff";
+	} else if (counter > 0) {
+		color = "#ff8026";
+	}
+	counter++;
+	ctx.fillStyle = color;
+	ctx.beginPath();
+	ctx.rect(320, 540, timeX, 20);
+	ctx.fill();
+
+	ctx.fillStyle = "#FFF33F";
+	ctx.font = "30px Times New Roman";
+	ctx.fillText("Time:", 320, 535);
+	ctx.beginPath();
+
+	ctx.beginPath();
+	ctx.rect(320, 540, timeX, 20);
+	ctx.stroke();
+
+}
+
+function draw() {
+
+	while (loading) {
+		oldScore = score;
+		//console.log("Loading....");
+		loadTimer++;
+		if (loadTimer > 1000) {
+			loading = false;
+		}
+	}
+	timeX -= .05;
+	if (timeX < 0) {
+		timeX = 0;
+	}
+	ctx.clearRect(0, 0, 800, 600);
+	drawBoard();
+	drawGrid();
+	time();
+	collision();
+	randArray();
+	if (!anErrorOccurred) {
+		if (!wasAMatch) {
+			checkForMatches();
+		}
+		checkingForZeroes();
+		drawFallingCols();
+	}
+}
+setInterval(draw, 10);
+</script>
+</body>
+</html>
