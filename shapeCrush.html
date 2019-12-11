@@ -9,7 +9,6 @@ canvas{ background: #F5F5F5; display: block; margin: 0 auto;}
 <body>
 <canvas id= "myCanvas" width="800" height= "600"></canvas>
 <script type="text/javascript">
-//Dis is da code!!
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 document.addEventListener("mousemove", mouseMoveHandler, false);
@@ -558,10 +557,7 @@ function drawBoard() {
 	
 	ctx.fillStyle = "#FFF33F";
 	ctx.font = "50px Times New Roman";
-	ctx.fillText("Clever Jewl", 30, 75);
-	ctx.fillStyle = "#FFF33F";
-	ctx.font = "50px Times New Roman";
-	ctx.fillText("Pun", 115, 120);
+	ctx.fillText("Shape Crush", 30, 100);
 	if(pX >= 50 && pX <= 250 && pY >= 150 && pY <= 200)
 	{
 		ctx.fillStyle = "#DAF0FF";
@@ -613,7 +609,7 @@ function drawBoard() {
 		ctx.beginPath();
 		if(mouseIsDown)
 		{
-			window.close();
+			timeX = 0;
 		}
 	}
 	else
@@ -642,7 +638,7 @@ function drawBoard() {
 		ctx.beginPath();
 		if(mouseIsDown)
 		{
-		
+			
 		}
 	}
 	else
@@ -714,22 +710,59 @@ function draw() {
 			loading = false;
 		}
 	}
-	timeX -= .05;
-	if (timeX < 0) {
-		timeX = 0;
-	}
-	ctx.clearRect(0, 0, 800, 600);
-	drawBoard();
-	drawGrid();
-	time();
-	collision();
-	randArray();
-	if (!anErrorOccurred) {
-		if (!wasAMatch) {
-			checkForMatches();
+	timeX -= .1;
+	if (timeX <= 0) {
+		ctx.fillStyle = "black";
+		ctx.fillRect(0, 0, 800, 600);
+		ctx.fillStyle = "white"
+		ctx.font = "80px Times New Roman";
+		ctx.fillText("Game Over", 200, 250);
+		ctx.fillStyle = "white"
+		ctx.font = "50px Times New Roman";
+		ctx.fillText("Score: "+score, 300, 310);
+		console.log("pX: " + pX + " pY: " + pY);
+		if(pX >= 295 && pX <= 495 && pY >= 420 && pY <= 470)
+		{
+			ctx.fillStyle = "white";
+			ctx.beginPath();
+			ctx.fillRect(295, 420, 200, 50);
+			ctx.stroke();
+			ctx.fillStyle = "black"
+			ctx.font = "30px Times New Roman";
+			ctx.fillText("New Game", 330, 455);
+			ctx.beginPath();
+			if(mouseIsDown)
+			{
+				timeX = 460;
+				score = 0;
+			}
 		}
-		checkingForZeroes();
-		drawFallingCols();
+		else
+		{
+			ctx.strokeStyle = "white";
+			ctx.beginPath();
+			ctx.rect(295, 420, 200, 50);
+			ctx.stroke();
+			ctx.fillStyle = "white"
+			ctx.font = "30px Times New Roman";
+			ctx.fillText("New Game", 330, 455);
+			ctx.beginPath();
+		}
+	}
+	else{
+		ctx.clearRect(0, 0, 800, 600);
+		drawBoard();
+		drawGrid();
+		time();
+		collision();
+		randArray();
+		if (!anErrorOccurred) {
+			if (!wasAMatch) {
+				checkForMatches();
+			}
+			checkingForZeroes();
+			drawFallingCols();
+		}
 	}
 }
 setInterval(draw, 10);
