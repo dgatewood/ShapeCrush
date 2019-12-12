@@ -9,6 +9,7 @@ canvas{ background: #F5F5F5; display: block; margin: 0 auto;}
 <body>
 <canvas id= "myCanvas" width="800" height= "600"></canvas>
 <script type="text/javascript">
+//Dis is da code!!
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 document.addEventListener("mousemove", mouseMoveHandler, false);
@@ -239,6 +240,169 @@ function checkForMatches() {
 	if (matchFound) {
 		matchFound = false;
 	}
+	///Check for L and T type shapes..
+	if (noMatchFound) {
+		for (var i = 0; i < 6; i++) {
+			for (var j = 0; j < 6; j++) {
+				if (randNums[i][j].value === randNums[i][j+1].value &&
+					randNums[i][j].value === randNums[i][j+2].value &&
+					randNums[i][j].value === randNums[i + 1][j+2].value &&
+					randNums[i][j].value === randNums[i + 2][j+2].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 3 across and down...
+					playSound3();
+					score += 60;
+					randNums[i][j].value = 0;
+					randNums[i][j+1].value = 0;
+					randNums[i][j+2].value = 0;
+					randNums[i + 1][j+2].value = 0;
+					randNums[i + 2][j+2].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					if(timeX<460-50)
+					{
+						timeX+=50;
+					}
+					//console.log("matchfound" + matchFound);
+				}
+				
+				else if (randNums[i][j].value === randNums[i][j+1].value &&
+					randNums[i][j].value === randNums[i][j+2].value &&
+					randNums[i][j].value === randNums[i + 1][j+1].value &&
+					randNums[i][j].value === randNums[i + 2][j+1].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 3 across and down...
+					playSound3();
+					score += 60;
+					randNums[i][j].value = 0;
+					randNums[i][j+1].value = 0;
+					randNums[i][j+2].value = 0;
+					randNums[i + 1][j+1].value = 0;
+					randNums[i + 2][j+1].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					if(timeX<460-50)
+					{
+						timeX+=50;
+					}
+					//console.log("matchfound" + matchFound);
+				}
+				
+				else if (randNums[i][j].value === randNums[i][j+1].value &&
+					randNums[i][j].value === randNums[i][j+2].value &&
+					randNums[i][j].value === randNums[i + 1][j].value &&
+					randNums[i][j].value === randNums[i + 2][j].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 3 across and down...
+					playSound3();
+					score += 60;
+					randNums[i][j].value = 0;
+					randNums[i][j+1].value = 0;
+					randNums[i][j+2].value = 0;
+					randNums[i + 1][j].value = 0;
+					randNums[i + 2][j].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					if(timeX<460-50)
+					{
+						timeX+=50;
+					}
+					//console.log("matchfound" + matchFound);
+				}
+				
+				else if (randNums[i][j].value === randNums[i+1][j].value &&
+					randNums[i][j].value === randNums[i+2][j].value &&
+					randNums[i][j].value === randNums[i + 2][j+1].value &&
+					randNums[i][j].value === randNums[i + 2][j+2].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 3 across and down...
+					playSound3();
+					score += 60;
+					randNums[i][j].value = 0;
+					randNums[i+1][j].value = 0;
+					randNums[i+2][j].value = 0;
+					randNums[i + 2][j+1].value = 0;
+					randNums[i + 2][j+2].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					if(timeX<460-50)
+					{
+						timeX+=50;
+					}
+					//console.log("matchfound" + matchFound);
+				}
+				
+				else if (randNums[i][j+2].value === randNums[i+1][j+2].value &&
+					randNums[i][j].value === randNums[i+2][j+2].value &&
+					randNums[i][j].value === randNums[i + 2][j].value &&
+					randNums[i][j].value === randNums[i + 2][j+1].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 3 across and down...
+					playSound3();
+					score += 60;
+					randNums[i][j+2].value = 0;
+					randNums[i+1][j+2].value = 0;
+					randNums[i+2][j+2].value = 0;
+					randNums[i + 2][j].value = 0;
+					randNums[i + 2][j+1].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					if(timeX<460-50)
+					{
+						timeX+=50;
+					}
+					//console.log("matchfound" + matchFound);
+				}
+				
+				else if (randNums[i][j+1].value === randNums[i+1][j+1].value &&
+					randNums[i][j].value === randNums[i+2][j+1].value &&
+					randNums[i][j].value === randNums[i + 2][j].value &&
+					randNums[i][j].value === randNums[i + 2][j+2].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 3 across and down...
+					playSound3();
+					score += 60;
+					randNums[i][j+1].value = 0;
+					randNums[i+1][j+1].value = 0;
+					randNums[i+2][j+1].value = 0;
+					randNums[i + 2][j].value = 0;
+					randNums[i + 2][j+2].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					if(timeX<460-50)
+					{
+						timeX+=50;
+					}
+					//console.log("matchfound" + matchFound);
+				}
+			}
+		}
+	}
+	/////
 	if (noMatchFound) {
 		for (var i = 0; i < 4; i++) {
 			for (var j = 0; j < 8; j++) {
@@ -261,6 +425,40 @@ function checkForMatches() {
 					j = 8;
 					noMatchFound = false;
 					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					if(timeX<460-50)
+					{
+						timeX+=50;
+					}
+					//console.log("matchfound" + matchFound);
+				}
+			}
+		}
+	}
+	if (noMatchFound) {
+		for (var i = 0; i < 8; i++) {
+			for (var j = 0; j < 4; j++) {
+				if (randNums[i][j].value === randNums[i][j + 1].value &&
+					randNums[i][j].value === randNums[i][j + 2].value &&
+					randNums[i][j].value === randNums[i][j + 3].value &&
+					randNums[i][j].value === randNums[i][j + 4].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 5 across
+					//console.log("We have a 5 match across");
+					//console.log("Starting at i  j: " + i + "   " + j);
+					playSound3();
+					score += 30;
+					randNums[i][j].value = 0;
+					randNums[i][j + 1].value = 0;
+					randNums[i][j + 2].value = 0;
+					randNums[i][j + 3].value = 0;
+					randNums[i][j + 4].value = 0;
+					checkForZeroes = true;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchAcross = true;
 					thereWasAMatch = true;
 					matchFound = true;
 					if(timeX<460-50)
@@ -304,69 +502,6 @@ function checkForMatches() {
 		}
 	}
 	if (noMatchFound) {
-		for (var i = 0; i < 6; i++) {
-			for (var j = 0; j < 8; j++) {
-				if (randNums[i][j].value === randNums[i + 1][j].value &&
-					randNums[i][j].value === randNums[i + 2][j].value &&
-					randNums[i][j].value > 0) {
-					//we have a match of 5 down
-					//console.log("We have a 3 match down");
-					//console.log("Starting at i  j: " + i + "   " + j);
-					playSound1();
-					score += 10;
-					randNums[i][j].value = 0;
-					randNums[i + 1][j].value = 0;
-					randNums[i + 2][j].value = 0;
-					i = 8;
-					j = 8;
-					noMatchFound = false;
-					matchDown = true;
-					thereWasAMatch = true;
-					matchFound = true;
-					if(timeX<460-15)
-					{
-						timeX+=15;
-					}
-					//console.log("matchfound" + matchFound);
-				}
-			}
-		}
-	}
-	if (noMatchFound) {
-		for (var i = 0; i < 8; i++) {
-			for (var j = 0; j < 4; j++) {
-				if (randNums[i][j].value === randNums[i][j + 1].value &&
-					randNums[i][j].value === randNums[i][j + 2].value &&
-					randNums[i][j].value === randNums[i][j + 3].value &&
-					randNums[i][j].value === randNums[i][j + 4].value &&
-					randNums[i][j].value > 0) {
-					//we have a match of 5 across
-					//console.log("We have a 5 match across");
-					//console.log("Starting at i  j: " + i + "   " + j);
-					playSound3();
-					score += 30;
-					randNums[i][j].value = 0;
-					randNums[i][j + 1].value = 0;
-					randNums[i][j + 2].value = 0;
-					randNums[i][j + 3].value = 0;
-					randNums[i][j + 4].value = 0;
-					checkForZeroes = true;
-					i = 8;
-					j = 8;
-					noMatchFound = false;
-					matchAcross = true;
-					thereWasAMatch = true;
-					matchFound = true;
-					if(timeX<460-50)
-					{
-						timeX+=50;
-					}
-					//console.log("matchfound" + matchFound);
-				}
-			}
-		}
-	}
-	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 5; j++) {
 				if (randNums[i][j].value === randNums[i][j + 1].value &&
@@ -399,12 +534,42 @@ function checkForMatches() {
 		}
 	}
 	if (noMatchFound) {
+		for (var i = 0; i < 6; i++) {
+			for (var j = 0; j < 8; j++) {
+				if (randNums[i][j].value === randNums[i + 1][j].value &&
+					randNums[i][j].value === randNums[i + 2][j].value &&
+					randNums[i][j].value > 0) {
+					//we have a match of 5 down
+					//console.log("We have a 3 match down");
+					//console.log("Starting at i  j: " + i + "   " + j);
+					playSound1();
+					score += 10;
+					randNums[i][j].value = 0;
+					randNums[i + 1][j].value = 0;
+					randNums[i + 2][j].value = 0;
+					i = 8;
+					j = 8;
+					noMatchFound = false;
+					matchDown = true;
+					thereWasAMatch = true;
+					matchFound = true;
+					if(timeX<460-15)
+					{
+						timeX+=15;
+					}
+					//console.log("matchfound" + matchFound);
+				}
+			}
+		}
+	}
+	
+	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 6; j++) {
 				if (randNums[i][j].value === randNums[i][j + 1].value &&
 					randNums[i][j].value === randNums[i][j + 2].value &&
 					randNums[i][j].value > 0) {
-					//we have a match of 5 across
+					//we have a match of 3 across
 					//console.log("We have a 3 match across");
 					//console.log("Starting at i  j: " + i + "   " + j);
 					playSound1();
@@ -557,7 +722,10 @@ function drawBoard() {
 	
 	ctx.fillStyle = "#FFF33F";
 	ctx.font = "50px Times New Roman";
-	ctx.fillText("Shape Crush", 30, 100);
+	ctx.fillText("Clever Jewl", 30, 75);
+	ctx.fillStyle = "#FFF33F";
+	ctx.font = "50px Times New Roman";
+	ctx.fillText("Pun", 115, 120);
 	if(pX >= 50 && pX <= 250 && pY >= 150 && pY <= 200)
 	{
 		ctx.fillStyle = "#DAF0FF";
@@ -609,7 +777,7 @@ function drawBoard() {
 		ctx.beginPath();
 		if(mouseIsDown)
 		{
-			timeX = 0;
+			window.close();
 		}
 	}
 	else
@@ -638,7 +806,7 @@ function drawBoard() {
 		ctx.beginPath();
 		if(mouseIsDown)
 		{
-			
+		
 		}
 	}
 	else
@@ -710,59 +878,22 @@ function draw() {
 			loading = false;
 		}
 	}
-	timeX -= .1;
-	if (timeX <= 0) {
-		ctx.fillStyle = "black";
-		ctx.fillRect(0, 0, 800, 600);
-		ctx.fillStyle = "white"
-		ctx.font = "80px Times New Roman";
-		ctx.fillText("Game Over", 200, 250);
-		ctx.fillStyle = "white"
-		ctx.font = "50px Times New Roman";
-		ctx.fillText("Score: "+score, 300, 310);
-		console.log("pX: " + pX + " pY: " + pY);
-		if(pX >= 295 && pX <= 495 && pY >= 420 && pY <= 470)
-		{
-			ctx.fillStyle = "white";
-			ctx.beginPath();
-			ctx.fillRect(295, 420, 200, 50);
-			ctx.stroke();
-			ctx.fillStyle = "black"
-			ctx.font = "30px Times New Roman";
-			ctx.fillText("New Game", 330, 455);
-			ctx.beginPath();
-			if(mouseIsDown)
-			{
-				timeX = 460;
-				score = 0;
-			}
-		}
-		else
-		{
-			ctx.strokeStyle = "white";
-			ctx.beginPath();
-			ctx.rect(295, 420, 200, 50);
-			ctx.stroke();
-			ctx.fillStyle = "white"
-			ctx.font = "30px Times New Roman";
-			ctx.fillText("New Game", 330, 455);
-			ctx.beginPath();
-		}
+	timeX -= .05;
+	if (timeX < 0) {
+		timeX = 0;
 	}
-	else{
-		ctx.clearRect(0, 0, 800, 600);
-		drawBoard();
-		drawGrid();
-		time();
-		collision();
-		randArray();
-		if (!anErrorOccurred) {
-			if (!wasAMatch) {
-				checkForMatches();
-			}
-			checkingForZeroes();
-			drawFallingCols();
+	ctx.clearRect(0, 0, 800, 600);
+	drawBoard();
+	drawGrid();
+	time();
+	collision();
+	randArray();
+	if (!anErrorOccurred) {
+		if (!wasAMatch) {
+			checkForMatches();
 		}
+		checkingForZeroes();
+		drawFallingCols();
 	}
 }
 setInterval(draw, 10);
