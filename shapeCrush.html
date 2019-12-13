@@ -13,8 +13,8 @@ canvas{ background: #F5F5F5; display: block; margin: 0 auto;}
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 document.addEventListener("mousemove", mouseMoveHandler, false);
-document.addEventListener("mousedown", getPosition, false);
-document.addEventListener("mouseup", getPosition2, false);
+document.addEventListener("mousedown", mouseDownHandler, false);
+document.addEventListener("mouseup", mouseUpHandler, false);
 var timeX = 460;
 var randNum3 = 0;
 var randStringNum = "";
@@ -69,10 +69,10 @@ function mouseMoveHandler(e) {
 	pX = e.clientX - canvas.offsetLeft;
 	pY = e.clientY - canvas.offsetTop;
 }
-function getPosition2(event) {
+function mouseUpHandler(event) {
 	mouseIsDown = false;
 }
-function getPosition(event) {
+function mouseDownHandler(event) {
 	mouseIsDown = true;
 }
 function getRandomInt(min, max) {
