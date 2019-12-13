@@ -44,6 +44,7 @@ var noMatchFound = true;
 var matchAcross = false;
 var matchDown = false;
 var matchFound = false;
+var devMode = false;
 var s1 = new Image();
 s1.src = "s1.png";
 var s2 = new Image();
@@ -127,7 +128,7 @@ for (var i = 0; i < 8; i++) {
 		randNums[i][j] = new gridObject(x, y, false, v, false);
 	}
 }
-//console.log("The value of randNums[7][7] is: " + randNums[7][7].value);
+//log("The value of randNums[7][7] is: " + randNums[7][7].value);
 function randArray() {
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
@@ -206,7 +207,7 @@ function collision() {
 				pY > (10 + (i * 60)) && pY < ((10 + (i * 60)) + 60)) {
 				if (mouseIsDown) {
 					randNums[i][j].isSelected = true;
-					//console.log("The value at " + i + " and  " + j + " is selected");
+					//log("The value at " + i + " and  " + j + " is selected");
 					if (selected1Col == -1) {
 						selected1Row = i;
 						selected1Col = j;
@@ -225,12 +226,12 @@ function collision() {
 					((selected1Col == selected2Col + 1 && selected1Row == selected2Row) ||
 					(selected1Col == selected2Col - 1 && selected1Row == selected2Row)))
 					{
-						console.log("Inside complicated if statement");
-						console.log("Value of selected1 row and col: " + randNums[selected1Row][selected1Col].value);
-						console.log("Value of selected2 row and col: " + randNums[selected2Row][selected2Col].value);
+						log("Inside complicated if statement");
+						log("Value of selected1 row and col: " + randNums[selected1Row][selected1Col].value);
+						log("Value of selected2 row and col: " + randNums[selected2Row][selected2Col].value);
 						if(randNums[selected1Row][selected1Col].value == 9)
 						{
-							console.log("RandNums at 1 is evaluated to 9");
+							log("RandNums at 1 is evaluated to 9");
 							randNums[selected1Row][selected1Col].value = 0;
 							deleteShapesFromBoard(randNums[selected2Row][selected2Col].value);
 							mouseIsDown = false;
@@ -276,12 +277,12 @@ function collision() {
 						}
 						checkForMatches();
 						if (!matchFound) {
-							console.log("match not found");
+							log("match not found");
 							playError();
 							if (selected1Col == selected2Col) {
 								if ((selected1Row == selected2Row + 1) ||
 									(selected1Row == selected2Row - 1)) {
-									console.log("error");
+									log("error");
 									var tempVal = randNums[selected2Row][selected2Col].value;
 									randNums[selected2Row][selected2Col].value =
 										randNums[selected1Row][selected1Col].value;
@@ -300,7 +301,7 @@ function collision() {
 						}
 						else if(matchFound && bonus1)
 						{
-							console.log("else if matchFound and bonus1");
+							log("else if matchFound and bonus1");
 							if(randNums[selected1Row][selected1Col].value == 0)
 							{
 								randNums[selected1Row][selected1Col].value = 9;
@@ -325,7 +326,7 @@ function collision() {
 	}
 }
 function checkForMatches() {
-	console.log("matchfound: " + matchFound);
+	log("matchfound: " + matchFound);
 	if (matchFound) {
 		matchFound = false;
 	}
@@ -356,7 +357,7 @@ function checkForMatches() {
 					{
 						timeX+=50;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 				
 				else if (randNums[i][j].value === randNums[i][j+1].value &&
@@ -382,7 +383,7 @@ function checkForMatches() {
 					{
 						timeX+=50;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 				
 				else if (randNums[i][j].value === randNums[i][j+1].value &&
@@ -408,7 +409,7 @@ function checkForMatches() {
 					{
 						timeX+=50;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 				
 				else if (randNums[i][j].value === randNums[i+1][j].value &&
@@ -434,7 +435,7 @@ function checkForMatches() {
 					{
 						timeX+=50;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 				
 				else if (randNums[i][j+2].value === randNums[i+1][j+2].value &&
@@ -460,7 +461,7 @@ function checkForMatches() {
 					{
 						timeX+=50;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 				
 				else if (randNums[i][j+1].value === randNums[i+1][j+1].value &&
@@ -486,7 +487,7 @@ function checkForMatches() {
 					{
 						timeX+=50;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 			}
 		}
@@ -501,8 +502,8 @@ function checkForMatches() {
 					randNums[i][j].value === randNums[i + 4][j].value &&
 					randNums[i][j].value > 0) {
 					//we have a match of 5 down
-					//console.log("We have a 5 match down");
-					//console.log("Starting at i  j: " + i + "   " + j);
+					//log("We have a 5 match down");
+					//log("Starting at i  j: " + i + "   " + j);
 					playSound3();
 					score += 30;
 					randNums[i][j].value = 0;
@@ -521,7 +522,7 @@ function checkForMatches() {
 					{
 						timeX+=50;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 			}
 		}
@@ -535,8 +536,8 @@ function checkForMatches() {
 					randNums[i][j].value === randNums[i][j + 4].value &&
 					randNums[i][j].value > 0) {
 					//we have a match of 5 across
-					//console.log("We have a 5 match across");
-					//console.log("Starting at i  j: " + i + "   " + j);
+					//log("We have a 5 match across");
+					//log("Starting at i  j: " + i + "   " + j);
 					playSound3();
 					score += 30;
 					randNums[i][j].value = 0;
@@ -556,7 +557,7 @@ function checkForMatches() {
 					{
 						timeX+=50;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 			}
 		}
@@ -569,8 +570,8 @@ function checkForMatches() {
 					randNums[i][j].value === randNums[i + 3][j].value &&
 					randNums[i][j].value > 0) {
 					//we have a match of 5 down
-					//console.log("We have a 4 match down");
-					//console.log("Starting at i  j: " + i + "   " + j);
+					//log("We have a 4 match down");
+					//log("Starting at i  j: " + i + "   " + j);
 					playSound2();
 					score += 20;
 					randNums[i][j].value = 0;
@@ -587,7 +588,7 @@ function checkForMatches() {
 					{
 						timeX+=25;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 			}
 		}
@@ -600,8 +601,8 @@ function checkForMatches() {
 					randNums[i][j].value === randNums[i][j + 3].value &&
 					randNums[i][j].value > 0) {
 					//we have a match of 5 across
-					//console.log("We have a 4 match across");
-					//console.log("Starting at i  j: " + i + "   " + j);
+					//log("We have a 4 match across");
+					//log("Starting at i  j: " + i + "   " + j);
 					playSound2();
 					score += 20;
 					randNums[i][j].value = 0;
@@ -619,7 +620,7 @@ function checkForMatches() {
 					{
 						timeX+=25;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 			}
 		}
@@ -631,8 +632,8 @@ function checkForMatches() {
 					randNums[i][j].value === randNums[i + 2][j].value &&
 					randNums[i][j].value > 0) {
 					//we have a match of 5 down
-					//console.log("We have a 3 match down");
-					//console.log("Starting at i  j: " + i + "   " + j);
+					//log("We have a 3 match down");
+					//log("Starting at i  j: " + i + "   " + j);
 					playSound1();
 					score += 10;
 					randNums[i][j].value = 0;
@@ -648,7 +649,7 @@ function checkForMatches() {
 					{
 						timeX+=15;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 			}
 		}
@@ -661,8 +662,8 @@ function checkForMatches() {
 					randNums[i][j].value === randNums[i][j + 2].value &&
 					randNums[i][j].value > 0) {
 					//we have a match of 3 across
-					//console.log("We have a 3 match across");
-					//console.log("Starting at i  j: " + i + "   " + j);
+					//log("We have a 3 match across");
+					//log("Starting at i  j: " + i + "   " + j);
 					playSound1();
 					score += 10;
 					randNums[i][j].value = 0;
@@ -679,7 +680,7 @@ function checkForMatches() {
 					{
 						timeX+=15;
 					}
-					//console.log("matchfound" + matchFound);
+					//log("matchfound" + matchFound);
 				}
 			}
 		}
@@ -689,8 +690,8 @@ function checkingForNegs() {
 	for (var i = 7; i >= 0; i--) {
 		for (var j = 7; j >= 0; j--) {
 			if (randNums[i][j].value == -1) {
-				//console.log("A negative was left behind after setting values....");
-				//console.log("This value was at " + i + "  and " + j);
+				//log("A negative was left behind after setting values....");
+				//log("This value was at " + i + "  and " + j);
 				//anErrorOccurred = true;
 			}
 		}
@@ -703,7 +704,7 @@ function checkingForZeroes() {
 				var count = 0;
 				var tempI = i;
 				while (tempI >= 0 && randNums[tempI][j].value == 0) {
-					//console.log("Temp i is: " + tempI);
+					//log("Temp i is: " + tempI);
 					count++;
 					tempI--;
 				}
@@ -723,7 +724,7 @@ function checkingForZeroes() {
 				count = 0;
 				tempI = i;
 				if (matchDown) {
-					//console.log("was a match down");
+					//log("was a match down");
 					while (tempI >= 0 && randNums[tempI][j].value == 0) {
 						randNums[tempI][j].value = -1;
 						count++;
@@ -731,14 +732,14 @@ function checkingForZeroes() {
 					}
 				}
 				if (matchAcross) {
-					//console.log("was a match across");
+					//log("was a match across");
 					randNums[tempI][j].value = -1;
 				}
-				//console.log("The count is: " + count);
-				//console.log("The size of tempNums is: " + tempNums.length);
-				//console.log("The values of tempNums is: " );
+				//log("The count is: " + count);
+				//log("The size of tempNums is: " + tempNums.length);
+				//log("The values of tempNums is: " );
 				for (var a = 0; a < tempNums.length; a++) {
-					//console.log("Value at: " + a + "  is:  " + tempNums[a]);
+					//log("Value at: " + a + "  is:  " + tempNums[a]);
 				}
 				//i = -1;
 				//j = -1;
@@ -746,6 +747,9 @@ function checkingForZeroes() {
 			}
 		}
 	}
+}
+function log(var str){
+    if(devMode)console.log(str);
 }
 function drawFallingCols() {
 	for (var i = 0; i < fallingCols.length; i++) {
@@ -777,12 +781,12 @@ function drawFallingCols() {
 		}
 		fallingCols[i].startIt += 1;
 		if (fallingCols[i].startIt == fallingCols[i].stopIt) {
-			//console.log("The length of fallingCols[" + i + "].nums.length: " + fallingCols[i].nums.length);
+			//log("The length of fallingCols[" + i + "].nums.length: " + fallingCols[i].nums.length);
 			for (var j = 0; j < fallingCols[i].nums.length; j++) {
-				//console.log("The value fo fallingCols at j : " + fallingCols[i].nums[j]);
+				//log("The value fo fallingCols at j : " + fallingCols[i].nums[j]);
 				randNums[fallingCols[i].x - j][fallingCols[i].y].value = fallingCols[i].nums[j];
 				//fallingCols[j].nums.pop();
-				//console.log("Index " + (fallingCols[i].x - j) + " and " + fallingCols[i].y +
+				//log("Index " + (fallingCols[i].x - j) + " and " + fallingCols[i].y +
 				//" is given a value of: " + fallingCols[i].nums[j]);
 			}
 			//fallingCols.splice(i,1);
@@ -961,10 +965,10 @@ function time() {
 	ctx.stroke();
 }
 function draw() {
-console.log("The size of falling cols is: " + fallingCols.length);
+log("The size of falling cols is: " + fallingCols.length);
 	while (loading) {
 		oldScore = score;
-		//console.log("Loading....");
+		//log("Loading....");
 		loadTimer++;
 		if (loadTimer > 1000) {
 			loading = false;
