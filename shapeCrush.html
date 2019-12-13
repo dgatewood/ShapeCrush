@@ -26,6 +26,7 @@ var pY = 0;
 var mouseIsDown = false;
 var score = 0;
 var checkForZeroes = false;
+var animations = [];
 var fallingCols = [];
 var selected1Row = -1;
 var selected2Row = -1;
@@ -44,6 +45,38 @@ var noMatchFound = true;
 var matchAcross = false;
 var matchDown = false;
 var matchFound = false;
+var explosion1 = new Image();
+explosion1.src = "tile000.png";
+var explosion2 = new Image();
+explosion2.src = "tile001.png";
+var explosion3 = new Image();
+explosion3.src = "tile002.png";
+var explosion4 = new Image();
+explosion4.src = "tile003.png";
+var explosion5 = new Image();
+explosion5.src = "tile004.png";
+var explosion6 = new Image();
+explosion6.src = "tile005.png";
+var explosion7 = new Image();
+explosion7.src = "tile006.png";
+var explosion8 = new Image();
+explosion8.src = "tile007.png";
+var explosion9 = new Image();
+explosion9.src = "tile008.png";
+var explosion10 = new Image();
+explosion10.src = "tile009.png";
+var explosion11 = new Image();
+explosion11.src = "tile010.png";
+var explosion12 = new Image();
+explosion12.src = "tile011.png";
+var explosion13 = new Image();
+explosion13.src = "tile012.png";
+var explosion14 = new Image();
+explosion14.src = "tile013.png";
+var explosion15 = new Image();
+explosion15.src = "tile014.png";
+var explosion16 = new Image();
+explosion16.src = "tile015.png";
 var s1 = new Image();
 s1.src = "s1.png";
 var s2 = new Image();
@@ -117,6 +150,15 @@ function fallingCol(startX, startY, data) {
 	this.stopIt = 31;
 	this.startIt = 0;
 }
+function Animation(type, x, y)
+{
+	this.type = type;
+	this.x = x;
+	this.y = y;
+	this.stopIt = 16;
+	this.startIt = 0;
+	this.animationDelay = 0;
+}
 var grid = [];
 for (var i = 0; i < 8; i++) {
 	grid[i] = [];
@@ -174,25 +216,103 @@ function drawGrid() {
 
 function deleteShapesFromBoard(num)
 {
-	var numShapes = 0;
-	for (var i = 0; i < 8; i++) {
-		for (var j = 0; j < 8; j++) {
-			if (grid[i][j].value == num) {
-				numShapes++;
-			}
-		}
-	}
-	
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
 			if (grid[i][j].value == num) {
 				grid[i][j].value = 0;
+				var y = (40 + (i * 60) - 30);
+				var x = (345 + (j * 60) - 30);
+				animations.push(new Animation(1, x, y));
 				checkingForZeroes();
 				while(fallingCols.length > 0)
 				{
 				////wait for it to regulate...
 				drawFallingCols();
 				}
+			}
+		}
+	}
+}
+
+function drawAnimations()
+{
+	for(var a = 0; a < animations.length; a++)
+	{
+		if(animations[a].type == 1)
+		{
+			if(animations[a].startIt == 0)
+			{
+				ctx.drawImage(explosion1, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 1)
+			{
+				ctx.drawImage(explosion2, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 2)
+			{
+				ctx.drawImage(explosion3, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 3)
+			{
+				ctx.drawImage(explosion4, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 4)
+			{
+				ctx.drawImage(explosion5, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 5)
+			{
+				ctx.drawImage(explosion6, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 6)
+			{
+				ctx.drawImage(explosion7, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 7)
+			{
+				ctx.drawImage(explosion8, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 8)
+			{
+				ctx.drawImage(explosion9, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 9)
+			{
+				ctx.drawImage(explosion10, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 10)
+			{
+				ctx.drawImage(explosion11, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 11)
+			{
+				ctx.drawImage(explosion12, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 12)
+			{
+				ctx.drawImage(explosion13, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 13)
+			{
+				ctx.drawImage(explosion14, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 14)
+			{
+				ctx.drawImage(explosion15, animations[a].x, animations[a].y);
+			}
+			if(animations[a].startIt == 15)
+			{
+				ctx.drawImage(explosion16, animations[a].x, animations[a].y);
+			}
+			animations[a].animationDelay++;
+			if(animations[a].animationDelay == 5)
+			{
+			animations[a].startIt++;
+			animations[a].animationDelay = 0;
+			}
+			if(animations[a].startIt == 15)
+			{
+				animations.splice(a, 1);
 			}
 		}
 	}
@@ -1000,6 +1120,7 @@ console.log("The size of falling cols is: " + fallingCols.length);
 		drawFallingCols();
 	}
 	bonus1 = false;
+	drawAnimations();
 }
 setInterval(draw, 10);
 </script>
