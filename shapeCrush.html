@@ -117,17 +117,17 @@ function fallingCol(startX, startY, data) {
 	this.stopIt = 31;
 	this.startIt = 0;
 }
-var randNums = [];
+var grid = [];
 for (var i = 0; i < 8; i++) {
-	randNums[i] = [];
+	grid[i] = [];
 	for (var j = 0; j < 8; j++) {
 		var v = getRandomInt(1, 5);
 		var x = (345 + (i * 60));
 		var y = (40 + (j * 60));
-		randNums[i][j] = new gridObject(x, y, false, v, false);
+		grid[i][j] = new gridObject(x, y, false, v, false);
 	}
 }
-//console.log("The value of randNums[7][7] is: " + randNums[7][7].value);
+//console.log("The value of grid[7][7] is: " + grid[7][7].value);
 function randArray() {
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
@@ -135,23 +135,23 @@ function randArray() {
 			var y = (15 + (i * 60));
 			ctx.fillStyle = "#000000";
 			ctx.font = "30px Times New Roman";
-			//ctx.fillText(randNums[i][j].value, x, y);
-			if (randNums[i][j].value == 1) {
+			//ctx.fillText(grid[i][j].value, x, y);
+			if (grid[i][j].value == 1) {
 				ctx.drawImage(s1, x, y);
 			}
-			if (randNums[i][j].value == 2) {
+			if (grid[i][j].value == 2) {
 				ctx.drawImage(s2, x, y);
 			}
-			if (randNums[i][j].value == 3) {
+			if (grid[i][j].value == 3) {
 				ctx.drawImage(s3, x, y);
 			}
-			if (randNums[i][j].value == 4) {
+			if (grid[i][j].value == 4) {
 				ctx.drawImage(s4, x, y);
 			}
-			if (randNums[i][j].value == 5) {
+			if (grid[i][j].value == 5) {
 				ctx.drawImage(s5, x, y);
 			}
-			if (randNums[i][j].value == 9) {
+			if (grid[i][j].value == 9) {
 				ctx.drawImage(s9, x, y);
 			}
 		}
@@ -160,7 +160,7 @@ function randArray() {
 function drawGrid() {
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
-			if (randNums[i][j].isSelected) {
+			if (grid[i][j].isSelected) {
 				ctx.fillStyle = "rgb(255,255,255)";
 				ctx.fillRect((310 + (j * 60)), (10 + (i * 60)), 60, 60);
 			}
@@ -177,7 +177,7 @@ function deleteShapesFromBoard(num)
 	var numShapes = 0;
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
-			if (randNums[i][j].value == num) {
+			if (grid[i][j].value == num) {
 				numShapes++;
 			}
 		}
@@ -185,8 +185,8 @@ function deleteShapesFromBoard(num)
 	
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
-			if (randNums[i][j].value == num) {
-				randNums[i][j].value = 0;
+			if (grid[i][j].value == num) {
+				grid[i][j].value = 0;
 				checkingForZeroes();
 				while(fallingCols.length > 0)
 				{
@@ -205,7 +205,7 @@ function collision() {
 			if (pX > (310 + (j * 60)) && pX < ((310 + (j * 60)) + 60) &&
 				pY > (10 + (i * 60)) && pY < ((10 + (i * 60)) + 60)) {
 				if (mouseIsDown) {
-					randNums[i][j].isSelected = true;
+					grid[i][j].isSelected = true;
 					//console.log("The value at " + i + " and  " + j + " is selected");
 					if (selected1Col == -1) {
 						selected1Row = i;
@@ -217,36 +217,36 @@ function collision() {
 						checkForMatchSuccess = true;
 					}
 					if(selected1Col > -1 && selected2Col > -1 &&
-					(randNums[selected1Row][selected1Col].value != randNums[selected2Row][selected2Col].value) &&
-					(randNums[selected1Row][selected1Col].value == 9 ||
-					randNums[selected2Row][selected2Col].value == 9) && 
+					(grid[selected1Row][selected1Col].value != grid[selected2Row][selected2Col].value) &&
+					(grid[selected1Row][selected1Col].value == 9 ||
+					grid[selected2Row][selected2Col].value == 9) && 
 					(((selected1Row == selected2Row + 1 && selected1Col == selected2Col) ||
 					(selected1Row == selected2Row - 1 && selected1Col == selected2Col))) ||
 					((selected1Col == selected2Col + 1 && selected1Row == selected2Row) ||
 					(selected1Col == selected2Col - 1 && selected1Row == selected2Row)))
 					{
 						console.log("Inside complicated if statement");
-						console.log("Value of selected1 row and col: " + randNums[selected1Row][selected1Col].value);
-						console.log("Value of selected2 row and col: " + randNums[selected2Row][selected2Col].value);
-						if(randNums[selected1Row][selected1Col].value == 9)
+						console.log("Value of selected1 row and col: " + grid[selected1Row][selected1Col].value);
+						console.log("Value of selected2 row and col: " + grid[selected2Row][selected2Col].value);
+						if(grid[selected1Row][selected1Col].value == 9)
 						{
 							console.log("RandNums at 1 is evaluated to 9");
-							randNums[selected1Row][selected1Col].value = 0;
-							deleteShapesFromBoard(randNums[selected2Row][selected2Col].value);
+							grid[selected1Row][selected1Col].value = 0;
+							deleteShapesFromBoard(grid[selected2Row][selected2Col].value);
 							mouseIsDown = false;
-							randNums[selected1Row][selected1Col].isSelected = false;
-							randNums[selected2Row][selected2Col].isSelected = false;
+							grid[selected1Row][selected1Col].isSelected = false;
+							grid[selected2Row][selected2Col].isSelected = false;
 							selected1Row = -1;
 							selected1Col = -1;
 							selected2Row = -1;
 							selected2Col = -1;
 						}
-						else if(randNums[selected2Row][selected2Col].value == 9){
-							randNums[selected2Row][selected2Col].value = 0;
-							deleteShapesFromBoard(randNums[selected1Row][selected1Col].value);
+						else if(grid[selected2Row][selected2Col].value == 9){
+							grid[selected2Row][selected2Col].value = 0;
+							deleteShapesFromBoard(grid[selected1Row][selected1Col].value);
 							mouseIsDown = false;
-							randNums[selected1Row][selected1Col].isSelected = false;
-							randNums[selected2Row][selected2Col].isSelected = false;
+							grid[selected1Row][selected1Col].isSelected = false;
+							grid[selected2Row][selected2Col].isSelected = false;
 							selected1Row = -1;
 							selected1Col = -1;
 							selected2Row = -1;
@@ -259,19 +259,19 @@ function collision() {
 						if (selected1Col == selected2Col) {
 							if ((selected1Row == selected2Row + 1) ||
 								(selected1Row == selected2Row - 1)) {
-								var tempVal = randNums[selected1Row][selected1Col].value;
-								randNums[selected1Row][selected1Col].value =
-									randNums[selected2Row][selected2Col].value;
-								randNums[selected2Row][selected2Col].value = tempVal;
+								var tempVal = grid[selected1Row][selected1Col].value;
+								grid[selected1Row][selected1Col].value =
+									grid[selected2Row][selected2Col].value;
+								grid[selected2Row][selected2Col].value = tempVal;
 							}
 						} 
 						else if (selected1Row == selected2Row) {
 							if ((selected1Col == selected2Col + 1) ||
 								(selected1Col == selected2Col - 1)) {
-								var tempVal = randNums[selected1Row][selected1Col].value;
-								randNums[selected1Row][selected1Col].value =
-									randNums[selected2Row][selected2Col].value;
-								randNums[selected2Row][selected2Col].value = tempVal;
+								var tempVal = grid[selected1Row][selected1Col].value;
+								grid[selected1Row][selected1Col].value =
+									grid[selected2Row][selected2Col].value;
+								grid[selected2Row][selected2Col].value = tempVal;
 							}
 						}
 						checkForMatches();
@@ -282,37 +282,37 @@ function collision() {
 								if ((selected1Row == selected2Row + 1) ||
 									(selected1Row == selected2Row - 1)) {
 									console.log("error");
-									var tempVal = randNums[selected2Row][selected2Col].value;
-									randNums[selected2Row][selected2Col].value =
-										randNums[selected1Row][selected1Col].value;
-									randNums[selected1Row][selected1Col].value = tempVal;
+									var tempVal = grid[selected2Row][selected2Col].value;
+									grid[selected2Row][selected2Col].value =
+										grid[selected1Row][selected1Col].value;
+									grid[selected1Row][selected1Col].value = tempVal;
 								}
 							} 
 							else if (selected1Row == selected2Row) {
 								if ((selected1Col == selected2Col + 1) ||
 									(selected1Col == selected2Col - 1)) {
-									var tempVal = randNums[selected2Row][selected2Col].value;
-									randNums[selected2Row][selected2Col].value =
-										randNums[selected1Row][selected1Col].value;
-									randNums[selected1Row][selected1Col].value = tempVal;
+									var tempVal = grid[selected2Row][selected2Col].value;
+									grid[selected2Row][selected2Col].value =
+										grid[selected1Row][selected1Col].value;
+									grid[selected1Row][selected1Col].value = tempVal;
 								}
 							}
 						}
 						else if(matchFound && bonus1)
 						{
 							console.log("else if matchFound and bonus1");
-							if(randNums[selected1Row][selected1Col].value == 0)
+							if(grid[selected1Row][selected1Col].value == 0)
 							{
-								randNums[selected1Row][selected1Col].value = 9;
+								grid[selected1Row][selected1Col].value = 9;
 							}
-							if(randNums[selected2Row][selected2Col].value == 0)
+							if(grid[selected2Row][selected2Col].value == 0)
 							{
-								randNums[selected2Row][selected2Col].value = 9;
+								grid[selected2Row][selected2Col].value = 9;
 							}
 						}
 						mouseIsDown = false;
-						randNums[selected1Row][selected1Col].isSelected = false;
-						randNums[selected2Row][selected2Col].isSelected = false;
+						grid[selected1Row][selected1Col].isSelected = false;
+						grid[selected2Row][selected2Col].isSelected = false;
 						selected1Row = -1;
 						selected1Col = -1;
 						selected2Row = -1;
@@ -333,19 +333,19 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 6; i++) {
 			for (var j = 0; j < 6; j++) {
-				if (randNums[i][j].value === randNums[i][j+1].value &&
-					randNums[i][j].value === randNums[i][j+2].value &&
-					randNums[i][j].value === randNums[i + 1][j+2].value &&
-					randNums[i][j].value === randNums[i + 2][j+2].value &&
-					randNums[i][j].value > 0) {
+				if (grid[i][j].value === grid[i][j+1].value &&
+					grid[i][j].value === grid[i][j+2].value &&
+					grid[i][j].value === grid[i + 1][j+2].value &&
+					grid[i][j].value === grid[i + 2][j+2].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					playSound3();
 					score += 60;
-					randNums[i][j].value = 0;
-					randNums[i][j+1].value = 0;
-					randNums[i][j+2].value = 0;
-					randNums[i + 1][j+2].value = 0;
-					randNums[i + 2][j+2].value = 0;
+					grid[i][j].value = 0;
+					grid[i][j+1].value = 0;
+					grid[i][j+2].value = 0;
+					grid[i + 1][j+2].value = 0;
+					grid[i + 2][j+2].value = 0;
 					i = 8;
 					j = 8;
 					noMatchFound = false;
@@ -361,19 +361,19 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (randNums[i][j].value === randNums[i][j+1].value &&
-					randNums[i][j].value === randNums[i][j+2].value &&
-					randNums[i][j].value === randNums[i + 1][j+1].value &&
-					randNums[i][j].value === randNums[i + 2][j+1].value &&
-					randNums[i][j].value > 0) {
+				else if (grid[i][j].value === grid[i][j+1].value &&
+					grid[i][j].value === grid[i][j+2].value &&
+					grid[i][j].value === grid[i + 1][j+1].value &&
+					grid[i][j].value === grid[i + 2][j+1].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					playSound3();
 					score += 60;
-					randNums[i][j].value = 0;
-					randNums[i][j+1].value = 0;
-					randNums[i][j+2].value = 0;
-					randNums[i + 1][j+1].value = 0;
-					randNums[i + 2][j+1].value = 0;
+					grid[i][j].value = 0;
+					grid[i][j+1].value = 0;
+					grid[i][j+2].value = 0;
+					grid[i + 1][j+1].value = 0;
+					grid[i + 2][j+1].value = 0;
 					i = 8;
 					j = 8;
 					noMatchFound = false;
@@ -389,19 +389,19 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (randNums[i][j].value === randNums[i][j+1].value &&
-					randNums[i][j].value === randNums[i][j+2].value &&
-					randNums[i][j].value === randNums[i + 1][j].value &&
-					randNums[i][j].value === randNums[i + 2][j].value &&
-					randNums[i][j].value > 0) {
+				else if (grid[i][j].value === grid[i][j+1].value &&
+					grid[i][j].value === grid[i][j+2].value &&
+					grid[i][j].value === grid[i + 1][j].value &&
+					grid[i][j].value === grid[i + 2][j].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					playSound3();
 					score += 60;
-					randNums[i][j].value = 0;
-					randNums[i][j+1].value = 0;
-					randNums[i][j+2].value = 0;
-					randNums[i + 1][j].value = 0;
-					randNums[i + 2][j].value = 0;
+					grid[i][j].value = 0;
+					grid[i][j+1].value = 0;
+					grid[i][j+2].value = 0;
+					grid[i + 1][j].value = 0;
+					grid[i + 2][j].value = 0;
 					i = 8;
 					j = 8;
 					noMatchFound = false;
@@ -417,19 +417,19 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (randNums[i][j].value === randNums[i+1][j].value &&
-					randNums[i][j].value === randNums[i+2][j].value &&
-					randNums[i][j].value === randNums[i + 2][j+1].value &&
-					randNums[i][j].value === randNums[i + 2][j+2].value &&
-					randNums[i][j].value > 0) {
+				else if (grid[i][j].value === grid[i+1][j].value &&
+					grid[i][j].value === grid[i+2][j].value &&
+					grid[i][j].value === grid[i + 2][j+1].value &&
+					grid[i][j].value === grid[i + 2][j+2].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					playSound3();
 					score += 60;
-					randNums[i][j].value = 0;
-					randNums[i+1][j].value = 0;
-					randNums[i+2][j].value = 0;
-					randNums[i + 2][j+1].value = 0;
-					randNums[i + 2][j+2].value = 0;
+					grid[i][j].value = 0;
+					grid[i+1][j].value = 0;
+					grid[i+2][j].value = 0;
+					grid[i + 2][j+1].value = 0;
+					grid[i + 2][j+2].value = 0;
 					i = 8;
 					j = 8;
 					noMatchFound = false;
@@ -445,19 +445,19 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (randNums[i][j+2].value === randNums[i+1][j+2].value &&
-					randNums[i][j].value === randNums[i+2][j+2].value &&
-					randNums[i][j].value === randNums[i + 2][j].value &&
-					randNums[i][j].value === randNums[i + 2][j+1].value &&
-					randNums[i][j].value > 0) {
+				else if (grid[i][j+2].value === grid[i+1][j+2].value &&
+					grid[i][j].value === grid[i+2][j+2].value &&
+					grid[i][j].value === grid[i + 2][j].value &&
+					grid[i][j].value === grid[i + 2][j+1].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					playSound3();
 					score += 60;
-					randNums[i][j+2].value = 0;
-					randNums[i+1][j+2].value = 0;
-					randNums[i+2][j+2].value = 0;
-					randNums[i + 2][j].value = 0;
-					randNums[i + 2][j+1].value = 0;
+					grid[i][j+2].value = 0;
+					grid[i+1][j+2].value = 0;
+					grid[i+2][j+2].value = 0;
+					grid[i + 2][j].value = 0;
+					grid[i + 2][j+1].value = 0;
 					i = 8;
 					j = 8;
 					noMatchFound = false;
@@ -473,19 +473,19 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (randNums[i][j+1].value === randNums[i+1][j+1].value &&
-					randNums[i][j].value === randNums[i+2][j+1].value &&
-					randNums[i][j].value === randNums[i + 2][j].value &&
-					randNums[i][j].value === randNums[i + 2][j+2].value &&
-					randNums[i][j].value > 0) {
+				else if (grid[i][j+1].value === grid[i+1][j+1].value &&
+					grid[i][j].value === grid[i+2][j+1].value &&
+					grid[i][j].value === grid[i + 2][j].value &&
+					grid[i][j].value === grid[i + 2][j+2].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					playSound3();
 					score += 60;
-					randNums[i][j+1].value = 0;
-					randNums[i+1][j+1].value = 0;
-					randNums[i+2][j+1].value = 0;
-					randNums[i + 2][j].value = 0;
-					randNums[i + 2][j+2].value = 0;
+					grid[i][j+1].value = 0;
+					grid[i+1][j+1].value = 0;
+					grid[i+2][j+1].value = 0;
+					grid[i + 2][j].value = 0;
+					grid[i + 2][j+2].value = 0;
 					i = 8;
 					j = 8;
 					noMatchFound = false;
@@ -507,21 +507,21 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 4; i++) {
 			for (var j = 0; j < 8; j++) {
-				if (randNums[i][j].value === randNums[i + 1][j].value &&
-					randNums[i][j].value === randNums[i + 2][j].value &&
-					randNums[i][j].value === randNums[i + 3][j].value &&
-					randNums[i][j].value === randNums[i + 4][j].value &&
-					randNums[i][j].value > 0) {
+				if (grid[i][j].value === grid[i + 1][j].value &&
+					grid[i][j].value === grid[i + 2][j].value &&
+					grid[i][j].value === grid[i + 3][j].value &&
+					grid[i][j].value === grid[i + 4][j].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 5 down
 					//console.log("We have a 5 match down");
 					//console.log("Starting at i  j: " + i + "   " + j);
 					playSound3();
 					score += 30;
-					randNums[i][j].value = 0;
-					randNums[i + 1][j].value = 0;
-					randNums[i + 2][j].value = 0;
-					randNums[i + 3][j].value = 0;
-					randNums[i + 4][j].value = 0;
+					grid[i][j].value = 0;
+					grid[i + 1][j].value = 0;
+					grid[i + 2][j].value = 0;
+					grid[i + 3][j].value = 0;
+					grid[i + 4][j].value = 0;
 					i = 8;
 					j = 8;
 					noMatchFound = false;
@@ -542,21 +542,21 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 4; j++) {
-				if (randNums[i][j].value === randNums[i][j + 1].value &&
-					randNums[i][j].value === randNums[i][j + 2].value &&
-					randNums[i][j].value === randNums[i][j + 3].value &&
-					randNums[i][j].value === randNums[i][j + 4].value &&
-					randNums[i][j].value > 0) {
+				if (grid[i][j].value === grid[i][j + 1].value &&
+					grid[i][j].value === grid[i][j + 2].value &&
+					grid[i][j].value === grid[i][j + 3].value &&
+					grid[i][j].value === grid[i][j + 4].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 5 across
 					//console.log("We have a 5 match across");
 					//console.log("Starting at i  j: " + i + "   " + j);
 					playSound3();
 					score += 30;
-					randNums[i][j].value = 0;
-					randNums[i][j + 1].value = 0;
-					randNums[i][j + 2].value = 0;
-					randNums[i][j + 3].value = 0;
-					randNums[i][j + 4].value = 0;
+					grid[i][j].value = 0;
+					grid[i][j + 1].value = 0;
+					grid[i][j + 2].value = 0;
+					grid[i][j + 3].value = 0;
+					grid[i][j + 4].value = 0;
 					checkForZeroes = true;
 					i = 8;
 					j = 8;
@@ -578,19 +578,19 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 5; i++) {
 			for (var j = 0; j < 8; j++) {
-				if (randNums[i][j].value === randNums[i + 1][j].value &&
-					randNums[i][j].value === randNums[i + 2][j].value &&
-					randNums[i][j].value === randNums[i + 3][j].value &&
-					randNums[i][j].value > 0) {
+				if (grid[i][j].value === grid[i + 1][j].value &&
+					grid[i][j].value === grid[i + 2][j].value &&
+					grid[i][j].value === grid[i + 3][j].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 5 down
 					//console.log("We have a 4 match down");
 					//console.log("Starting at i  j: " + i + "   " + j);
 					playSound2();
 					score += 20;
-					randNums[i][j].value = 0;
-					randNums[i + 1][j].value = 0;
-					randNums[i + 2][j].value = 0;
-					randNums[i + 3][j].value = 0;
+					grid[i][j].value = 0;
+					grid[i + 1][j].value = 0;
+					grid[i + 2][j].value = 0;
+					grid[i + 3][j].value = 0;
 					i = 8;
 					j = 8;
 					noMatchFound = false;
@@ -609,19 +609,19 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 5; j++) {
-				if (randNums[i][j].value === randNums[i][j + 1].value &&
-					randNums[i][j].value === randNums[i][j + 2].value &&
-					randNums[i][j].value === randNums[i][j + 3].value &&
-					randNums[i][j].value > 0) {
+				if (grid[i][j].value === grid[i][j + 1].value &&
+					grid[i][j].value === grid[i][j + 2].value &&
+					grid[i][j].value === grid[i][j + 3].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 5 across
 					//console.log("We have a 4 match across");
 					//console.log("Starting at i  j: " + i + "   " + j);
 					playSound2();
 					score += 20;
-					randNums[i][j].value = 0;
-					randNums[i][j + 1].value = 0;
-					randNums[i][j + 2].value = 0;
-					randNums[i][j + 3].value = 0;
+					grid[i][j].value = 0;
+					grid[i][j + 1].value = 0;
+					grid[i][j + 2].value = 0;
+					grid[i][j + 3].value = 0;
 					checkForZeroes = true;
 					i = 8;
 					j = 8;
@@ -641,17 +641,17 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 6; i++) {
 			for (var j = 0; j < 8; j++) {
-				if (randNums[i][j].value === randNums[i + 1][j].value &&
-					randNums[i][j].value === randNums[i + 2][j].value &&
-					randNums[i][j].value > 0) {
+				if (grid[i][j].value === grid[i + 1][j].value &&
+					grid[i][j].value === grid[i + 2][j].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 5 down
 					//console.log("We have a 3 match down");
 					//console.log("Starting at i  j: " + i + "   " + j);
 					playSound1();
 					score += 10;
-					randNums[i][j].value = 0;
-					randNums[i + 1][j].value = 0;
-					randNums[i + 2][j].value = 0;
+					grid[i][j].value = 0;
+					grid[i + 1][j].value = 0;
+					grid[i + 2][j].value = 0;
 					i = 8;
 					j = 8;
 					noMatchFound = false;
@@ -671,17 +671,17 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 6; j++) {
-				if (randNums[i][j].value === randNums[i][j + 1].value &&
-					randNums[i][j].value === randNums[i][j + 2].value &&
-					randNums[i][j].value > 0) {
+				if (grid[i][j].value === grid[i][j + 1].value &&
+					grid[i][j].value === grid[i][j + 2].value &&
+					grid[i][j].value > 0) {
 					//we have a match of 3 across
 					//console.log("We have a 3 match across");
 					//console.log("Starting at i  j: " + i + "   " + j);
 					playSound1();
 					score += 10;
-					randNums[i][j].value = 0;
-					randNums[i][j + 1].value = 0;
-					randNums[i][j + 2].value = 0;
+					grid[i][j].value = 0;
+					grid[i][j + 1].value = 0;
+					grid[i][j + 2].value = 0;
 					checkForZeroes = true;
 					i = 8;
 					j = 8;
@@ -702,7 +702,7 @@ function checkForMatches() {
 function checkingForNegs() {
 	for (var i = 7; i >= 0; i--) {
 		for (var j = 7; j >= 0; j--) {
-			if (randNums[i][j].value == -1) {
+			if (grid[i][j].value == -1) {
 				//console.log("A negative was left behind after setting values....");
 				//console.log("This value was at " + i + "  and " + j);
 				//anErrorOccurred = true;
@@ -713,10 +713,10 @@ function checkingForNegs() {
 function checkingForZeroes() {
 	for (var i = 7; i >= 0; i--) {
 		for (var j = 7; j >= 0; j--) {
-			if (randNums[i][j].value == 0) {
+			if (grid[i][j].value == 0) {
 				var count = 0;
 				var tempI = i;
-				while (tempI >= 0 && randNums[tempI][j].value == 0) {
+				while (tempI >= 0 && grid[tempI][j].value == 0) {
 					//console.log("Temp i is: " + tempI);
 					count++;
 					tempI--;
@@ -725,7 +725,7 @@ function checkingForZeroes() {
 				var indexToStartAdding = i - count;
 				var counter = 0;
 				while (counter <= indexToStartAdding) {
-					tempNums.push(randNums[indexToStartAdding - counter][j].value);
+					tempNums.push(grid[indexToStartAdding - counter][j].value);
 					counter++;
 				}
 				counter = 0;
@@ -738,15 +738,15 @@ function checkingForZeroes() {
 				tempI = i;
 				if (matchDown) {
 					//console.log("was a match down");
-					while (tempI >= 0 && randNums[tempI][j].value == 0) {
-						randNums[tempI][j].value = -1;
+					while (tempI >= 0 && grid[tempI][j].value == 0) {
+						grid[tempI][j].value = -1;
 						count++;
 						tempI--;
 					}
 				}
 				if (matchAcross) {
 					//console.log("was a match across");
-					randNums[tempI][j].value = -1;
+					grid[tempI][j].value = -1;
 				}
 				//console.log("The count is: " + count);
 				//console.log("The size of tempNums is: " + tempNums.length);
@@ -794,7 +794,7 @@ function drawFallingCols() {
 			//console.log("The length of fallingCols[" + i + "].nums.length: " + fallingCols[i].nums.length);
 			for (var j = 0; j < fallingCols[i].nums.length; j++) {
 				//console.log("The value fo fallingCols at j : " + fallingCols[i].nums[j]);
-				randNums[fallingCols[i].x - j][fallingCols[i].y].value = fallingCols[i].nums[j];
+				grid[fallingCols[i].x - j][fallingCols[i].y].value = fallingCols[i].nums[j];
 				//fallingCols[j].nums.pop();
 				//console.log("Index " + (fallingCols[i].x - j) + " and " + fallingCols[i].y +
 				//" is given a value of: " + fallingCols[i].nums[j]);
@@ -827,10 +827,8 @@ function drawBoard() {
 	
 	ctx.fillStyle = "#FFF33F";
 	ctx.font = "50px Times New Roman";
-	ctx.fillText("Candy Gem", 30, 75);
 	ctx.fillStyle = "#FFF33F";
-	ctx.font = "50px Times New Roman";
-	ctx.fillText("Pursuit", 115, 120);
+	ctx.fillText("Shape Crush", 30, 75);
 	if(pX >= 50 && pX <= 250 && pY >= 150 && pY <= 200)
 	{
 		ctx.fillStyle = "#DAF0FF";
@@ -850,7 +848,7 @@ function drawBoard() {
 				var v = getRandomInt(1, 5);
 				var x = (345 + (i * 60));
 				var y = (40 + (j * 60));
-				randNums[i][j] = new gridObject(x, y, false, v, false);
+				grid[i][j] = new gridObject(x, y, false, v, false);
 			}
 			}
 		}
