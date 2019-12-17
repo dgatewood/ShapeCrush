@@ -255,10 +255,17 @@ function deleteShapesFromBoard(num)
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
 			if (grid[i][j].value == num) {
-				grid[i][j].value = 0;
 				var y = (40 + (i * 60) - 30);
 				var x = (345 + (j * 60) - 30);
 				animations.push(new Animation(1, x, y));
+			}
+		}
+	}
+	
+	for (var i = 0; i < 8; i++) {
+		for (var j = 0; j < 8; j++) {
+			if (grid[i][j].value == num) {
+				grid[i][j].value = 0;
 				checkingForZeroes();
 				while(fallingCols.length > 0)
 				{
