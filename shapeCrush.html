@@ -135,7 +135,27 @@ var thereWasAMatch = false;
 var bonus1 = false;
 var options = false;
 var imageAmountLoaded = 0;
+let level = 1;
+let levels = [];
+var startTime = 0;
+var endTime = 0;
 
+function Level(level, type, score, totalBlocksDestroyed, time, noSpecials)
+{
+this.level  = level;
+this.type = type;
+this.score = score;
+this.currentScore = 0;
+this.totalDestroyed = totalBlocksDestroyed;
+this.time = time;
+this.noSpecials = noSpecials;
+this.displayed = false;
+}
+
+////Create levels
+levels.push(new Level(1, 1, 2000, 0, 300, false));
+levels.push(new Level(2, 1, 1500, 0, 180, false));
+levels.push(new Level(3, 1, 1000, 0, 60, false));
 
 function mouseMoveHandler(e) {
 	pX = e.clientX - canvas.offsetLeft;
@@ -235,6 +255,22 @@ function randArray() {
 		}
 	}
 }
+
+function start() {
+  startTime = new Date();
+};
+
+function end() {
+  endTime = new Date();
+  var timeDiff = endTime - startTime; //in ms
+  // strip the ms
+  timeDiff /= 1000;
+
+  // get seconds 
+  var seconds = Math.round(timeDiff);
+  return seconds;
+}
+
 function drawGrid() {
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
@@ -266,6 +302,7 @@ function deleteShapesFromBoard(num)
 		for (var j = 0; j < 8; j++) {
 			if (grid[i][j].value == num) {
 				grid[i][j].value = 0;
+				score += 10;
 				checkingForZeroes();
 				while(fallingCols.length > 0)
 				{
@@ -1247,6 +1284,57 @@ function loadImages()
 	loading = false;
 }
 
+function drawLevelScreen()
+{
+	var grd1 = ctx.createLinearGradient(10, 160, 150, 0);
+	grd1.addColorStop(0, "#0063EA");
+	grd1.addColorStop(1, "#1477FF");
+	ctx.fillStyle = grd1;
+	ctx.beginPath();
+	ctx.rect(0, 0, 800, 600);
+	ctx.fill();
+	ctx.fillStyle = "#FFF33F";
+	ctx.font = "50px Times New Roman";
+	ctx.fillText("Level: " + level, 250, 100);
+	ctx.fillText("Goal" , 275, 150);
+	if(levels[level-1].type === 1)
+	{
+		ctx.fillText("Gain " + levels[level-1].score + " points in " + levels[level-1].time + " seconds." , 63, 300);
+	}
+	
+	if(pX >= 250 && pX <= 450 && pY >= 500 && pY <= 550)
+	{
+		ctx.fillStyle = "#DAF0FF";
+		ctx.beginPath();
+		ctx.fillRect(250, 500, 200, 50);
+		ctx.rect(250, 500, 200, 50);
+		ctx.stroke();
+		ctx.fillStyle = "black"
+		ctx.font = "30px Times New Roman";
+		ctx.fillText("Continue", 265, 540);
+		if(mouseIsDown)
+		{
+			levels[level-1].displayed = true;
+			score = 0;
+			start();
+			console.log("Start time : " + startTime);
+			timeX = levels[level-1].time;
+		}
+	}
+	else
+	{
+		ctx.fillStyle = "#0063EA";
+		ctx.beginPath();
+		ctx.fillRect(250, 500, 200, 50);
+		ctx.rect(250, 500, 200, 50);
+		ctx.stroke();
+		ctx.fillStyle = "black"
+		ctx.font = "30px Times New Roman";
+		ctx.fillText("Continue", 265, 540);
+		ctx.beginPath();
+	}
+}
+
 function draw() {
 	ctx.clearRect(0, 0, 800, 600);
 	if(options)
@@ -1255,65 +1343,76 @@ function draw() {
 	}
 	else
 	{
-
-	timeX -= .1;
-	if (timeX <= 0) {
-		timeX = 0;
-		ctx.fillStyle = "black";
-		ctx.fillRect(0, 0, 800, 600);
-		ctx.fillStyle = "white"
-		ctx.font = "80px Times New Roman";
-		ctx.fillText("Game Over", 200, 250);
-		ctx.fillStyle = "white"
-		ctx.font = "50px Times New Roman";
-		ctx.fillText("Score: "+score, 300, 310);
-		console.log("pX: " + pX + " pY: " + pY);
-		if(pX >= 295 && pX <= 495 && pY >= 420 && pY <= 470)
+	if(levels[level-1].displayed == false)
+	{
+		drawLevelScreen();
+	}
+	else
+	{
+		endTime = end();
+		console.log("End time is : " + endTime);
+		timeX  = levels[level-1].time - endTime;
+		if(score >= levels[level-1].score)
 		{
-			ctx.fillStyle = "white";
-			ctx.beginPath();
-			ctx.fillRect(295, 420, 200, 50);
-			ctx.stroke();
-			ctx.fillStyle = "black"
-			ctx.font = "30px Times New Roman";
-			ctx.fillText("New Game", 330, 455);
-			ctx.beginPath();
-			if(mouseIsDown)
+			level++;
+		}
+		if (timeX <= 0) {
+			timeX = 0;
+			ctx.fillStyle = "black";
+			ctx.fillRect(0, 0, 800, 600);
+			ctx.fillStyle = "white"
+			ctx.font = "80px Times New Roman";
+			ctx.fillText("Game Over", 200, 250);
+			ctx.fillStyle = "white"
+			ctx.font = "50px Times New Roman";
+			ctx.fillText("Score: "+score, 300, 310);
+			console.log("pX: " + pX + " pY: " + pY);
+			if(pX >= 295 && pX <= 495 && pY >= 420 && pY <= 470)
 			{
-				timeX = 460;
-				score = 0;
+				ctx.fillStyle = "white";
+				ctx.beginPath();
+				ctx.fillRect(295, 420, 200, 50);
+				ctx.stroke();
+				ctx.fillStyle = "black"
+				ctx.font = "30px Times New Roman";
+				ctx.fillText("New Game", 330, 455);
+				ctx.beginPath();
+				if(mouseIsDown)
+				{
+					timeX = levels[level-1].time;
+					score = 0;
+				}
+			}
+			else
+			{
+				ctx.strokeStyle = "white";
+				ctx.beginPath();
+				ctx.rect(295, 420, 200, 50);
+				ctx.stroke();
+				ctx.fillStyle = "white"
+				ctx.font = "30px Times New Roman";
+				ctx.fillText("New Game", 330, 455);
+				ctx.beginPath();
 			}
 		}
-		else
-		{
-			ctx.strokeStyle = "white";
-			ctx.beginPath();
-			ctx.rect(295, 420, 200, 50);
-			ctx.stroke();
-			ctx.fillStyle = "white"
-			ctx.font = "30px Times New Roman";
-			ctx.fillText("New Game", 330, 455);
-			ctx.beginPath();
+		else{
+		drawBoard();
+		drawGrid();
+		time();
+		collision();
+		randArray();
+		if (!anErrorOccurred) {
+			if (!wasAMatch) {
+				checkForMatches();
+			}
+			checkingForZeroes();
+			drawFallingCols();
+		}
+		bonus1 = false;
+		drawAnimations();
+		}
 		}
 	}
-	else{
-	drawBoard();
-	drawGrid();
-	time();
-	collision();
-	randArray();
-	if (!anErrorOccurred) {
-		if (!wasAMatch) {
-			checkForMatches();
-		}
-		checkingForZeroes();
-		drawFallingCols();
-	}
-	bonus1 = false;
-	drawAnimations();
-	}
-	}
-
 }
 setInterval(draw, 10);
 </script>
