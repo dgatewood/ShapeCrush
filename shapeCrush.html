@@ -119,7 +119,10 @@ s4.src = "s4.png";
 var i23Loaded = false;
 var s5 = new Image();
 s5.src = "s5.png";
-
+var s7 = new Image();
+s7.src = "vertical.png";
+var s8 = new Image();
+s8.src = "horizontal.png";
 
 var d1 = new Audio();
 d1.src = "d1.wav";
@@ -133,6 +136,8 @@ var oldScore = 0;
 var checkForMatchSuccess = false;
 var thereWasAMatch = false;
 var bonus1 = false;
+var bonus2 = false;
+var bonus3 = false;
 var options = false;
 var imageAmountLoaded = 0;
 let level = 1;
@@ -153,9 +158,12 @@ this.displayed = false;
 }
 
 ////Create levels
-levels.push(new Level(1, 1, 2000, 0, 300, false));
+levels.push(new Level(1, 1, 500, 0, 300, false));
 levels.push(new Level(2, 1, 1500, 0, 180, false));
 levels.push(new Level(3, 1, 1000, 0, 60, false));
+levels.push(new Level(4, 1, 1000, 0, 59, false));
+levels.push(new Level(5, 1, 1000, 0, 58, false));
+levels.push(new Level(6, 1, 1000, 0, 57, false));
 
 function mouseMoveHandler(e) {
 	pX = e.clientX - canvas.offsetLeft;
@@ -225,6 +233,18 @@ for (var i = 0; i < 8; i++) {
 		grid[i][j] = new gridObject(x, y, false, v, false);
 	}
 }
+
+function resetBoard(){
+for (var i = 0; i < 8; i++) {
+	for (var j = 0; j < 8; j++) {
+		var v = getRandomInt(1, 5);
+		var x = (345 + (i * 60));
+		var y = (40 + (j * 60));
+		grid[i][j] = new gridObject(x, y, false, v, false);
+	}
+}
+}
+
 //console.log("The value of grid[7][7] is: " + grid[7][7].value);
 function randArray() {
 	for (var i = 0; i < 8; i++) {
@@ -234,23 +254,29 @@ function randArray() {
 			ctx.fillStyle = "#000000";
 			ctx.font = "30px Times New Roman";
 			//ctx.fillText(grid[i][j].value, x, y);
-			if (grid[i][j].value == 1) {
+			if (grid[i][j].value % 10 == 1) {
 				ctx.drawImage(s1, x, y);
 			}
-			if (grid[i][j].value == 2) {
+			if (grid[i][j].value % 10 == 2) {
 				ctx.drawImage(s2, x, y);
 			}
-			if (grid[i][j].value == 3) {
+			if (grid[i][j].value % 10 == 3) {
 				ctx.drawImage(s3, x, y);
 			}
-			if (grid[i][j].value == 4) {
+			if (grid[i][j].value % 10 == 4) {
 				ctx.drawImage(s4, x, y);
 			}
-			if (grid[i][j].value == 5) {
+			if (grid[i][j].value % 10 == 5) {
 				ctx.drawImage(s5, x, y);
 			}
 			if (grid[i][j].value == 9) {
 				ctx.drawImage(s9, x, y);
+			}
+			if (grid[i][j].value > 19 && grid[i][j].value < 26) {
+				ctx.drawImage(s7, x, y);
+			}
+			if (grid[i][j].value > 29 && grid[i][j].value < 36) {
+				ctx.drawImage(s8, x, y);
 			}
 		}
 	}
@@ -312,6 +338,46 @@ function deleteShapesFromBoard(num)
 			}
 		}
 	}
+}
+
+function deleteRowFromBoard(rowNum)
+{
+	for (var i = 0; i < 8; i++) {
+				var y = (40 + (rowNum * 60) - 30);
+				var x = (345 + (i * 60) - 30);
+				animations.push(new Animation(1, x, y));
+	}
+	
+	for (var i = 0; i < 8; i++) {
+				grid[rowNum][i].value = 0;
+				score += 10;
+				checkingForZeroes();
+				while(fallingCols.length > 0)
+				{
+				////wait for it to regulate...
+				drawFallingCols();
+				}
+	}
+}
+
+function deleteColFromBoard(colNum)
+{
+		for (var j = 0; j < 8; j++) {
+				var y = (40 + ( j* 60) - 30);
+				var x = (345 + (colNum * 60) - 30);
+				animations.push(new Animation(1, x, y));
+			}
+	
+		for (var j = 0; j < 8; j++) {
+				grid[j][colNum].value = 0;
+				score += 10;
+				checkingForZeroes();
+				while(fallingCols.length > 0)
+				{
+				////wait for it to regulate...
+				drawFallingCols();
+				}
+		}
 }
 
 function drawAnimations()
@@ -399,6 +465,8 @@ function drawAnimations()
 }
 
 function collision() {
+var selected1Val = 0;
+var selected2Val = 0;
 	for (var i = 0; i < 8; i++) {
 		for (var j = 0; j < 8; j++) {
 			///ctx.rect((310 + (j*60)),(10 + (i*60)),(60),(60));
@@ -474,7 +542,10 @@ function collision() {
 								grid[selected2Row][selected2Col].value = tempVal;
 							}
 						}
+						selected1Val = grid[selected1Row][selected1Col].value;
+						selected2Val = grid[selected2Row][selected2Col].value;
 						checkForMatches();
+						
 						if (!matchFound) {
 							//console.log("match not found");
 							if(isSound)
@@ -512,6 +583,37 @@ function collision() {
 							{
 								grid[selected2Row][selected2Col].value = 9;
 							}
+							bonus1 = !bonus1;
+						}
+						else if(matchFound && bonus2)
+						{
+							//console.log("else if matchFound and bonus1");
+							if(grid[selected1Row][selected1Col].value == 0)
+							{
+								grid[selected1Row][selected1Col].value = 
+								selected1Val + 20;
+							}
+							if(grid[selected2Row][selected2Col].value == 0)
+							{
+								grid[selected2Row][selected2Col].value = 
+								selected1Val + 20;
+							}
+							bonus2 = !bonus2;
+						}
+						else if(matchFound && bonus3)
+						{
+							//console.log("else if matchFound and bonus1");
+							if(grid[selected1Row][selected1Col].value == 0)
+							{
+								grid[selected1Row][selected1Col].value = 
+								selected1Val + 30;
+							}
+							if(grid[selected2Row][selected2Col].value == 0)
+							{
+								grid[selected2Row][selected2Col].value = 
+								selected1Val + 30;
+							}
+							bonus3 = !bonus3;
 						}
 						mouseIsDown = false;
 						grid[selected1Row][selected1Col].isSelected = false;
@@ -536,12 +638,52 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 6; i++) {
 			for (var j = 0; j < 6; j++) {
-				if (grid[i][j].value === grid[i][j+1].value &&
-					grid[i][j].value === grid[i][j+2].value &&
-					grid[i][j].value === grid[i + 1][j+2].value &&
-					grid[i][j].value === grid[i + 2][j+2].value &&
+				if (grid[i][j].value%10  === grid[i][j+1].value%10  &&
+					grid[i][j].value%10  === grid[i][j+2].value%10  &&
+					grid[i][j].value%10  === grid[i + 1][j+2].value%10  &&
+					grid[i][j].value%10  === grid[i + 2][j+2].value %10 &&
 					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
+					if(grid[i][j].value > 19 && grid[i][j].value < 30)
+					{
+						deleteColFromBoard(i);
+					}
+					if(grid[i][j+1].value > 19 && grid[i][j+1].value < 30)
+					{
+						deleteColFromBoard(i);
+					}
+					if(grid[i][j+2].value > 19 && grid[i][j+2].value < 30)
+					{
+						deleteColFromBoard(i);
+					}
+					if(grid[i+1][j+2].value > 19 && grid[i+1][j+2].value < 30)
+					{
+						deleteColFromBoard(i+1);
+					}
+					if(grid[i+2][j+2].value > 19 && grid[i+2][j+2].value < 30)
+					{
+						deleteColFromBoard(i+2);
+					}
+					if(grid[i][j].value > 29 && grid[i][j].value < 40)
+					{
+						deleteRowFromBoard(j);
+					}
+					if(grid[i][j+1].value > 29 && grid[i][j+1].value < 40)
+					{
+						deleteRowFromBoard(j+1);
+					}
+					if(grid[i][j+2].value > 29 && grid[i][j+2].value < 40)
+					{
+						deleteRowFromBoard(j+2);
+					}
+					if(grid[i+1][j+2].value > 29 && grid[i+1][j+2].value < 40)
+					{
+						deleteRowFromBoard(j+2);
+					}
+					if(grid[i+2][j+2].value > 29 && grid[i+2][j+2].value < 40)
+					{
+						deleteRowFromBoard(j+2);
+					}
 					if(isSound)
 					{
 					playSound3();
@@ -567,10 +709,10 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (grid[i][j].value === grid[i][j+1].value &&
-					grid[i][j].value === grid[i][j+2].value &&
-					grid[i][j].value === grid[i + 1][j+1].value &&
-					grid[i][j].value === grid[i + 2][j+1].value &&
+				else if (grid[i][j].value%10  === grid[i][j+1].value%10  &&
+					grid[i][j].value%10  === grid[i][j+2].value%10  &&
+					grid[i][j].value%10  === grid[i + 1][j+1].value%10  &&
+					grid[i][j].value%10  === grid[i + 2][j+1].value%10  &&
 					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					if(isSound)
@@ -598,10 +740,10 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (grid[i][j].value === grid[i][j+1].value &&
-					grid[i][j].value === grid[i][j+2].value &&
-					grid[i][j].value === grid[i + 1][j].value &&
-					grid[i][j].value === grid[i + 2][j].value &&
+				else if (grid[i][j].value %10 === grid[i][j+1].value%10  &&
+					grid[i][j].value%10 === grid[i][j+2].value%10  &&
+					grid[i][j].value%10  === grid[i + 1][j].value%10  &&
+					grid[i][j].value%10  === grid[i + 2][j].value %10 &&
 					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					if(isSound)
@@ -629,10 +771,10 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (grid[i][j].value === grid[i+1][j].value &&
-					grid[i][j].value === grid[i+2][j].value &&
-					grid[i][j].value === grid[i + 2][j+1].value &&
-					grid[i][j].value === grid[i + 2][j+2].value &&
+				else if (grid[i][j].value%10  === grid[i+1][j].value%10  &&
+					grid[i][j].value%10  === grid[i+2][j].value%10  &&
+					grid[i][j].value%10  === grid[i + 2][j+1].value%10  &&
+					grid[i][j].value%10  === grid[i + 2][j+2].value%10  &&
 					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					if(isSound)
@@ -660,10 +802,10 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (grid[i][j+2].value === grid[i+1][j+2].value &&
-					grid[i][j].value === grid[i+2][j+2].value &&
-					grid[i][j].value === grid[i + 2][j].value &&
-					grid[i][j].value === grid[i + 2][j+1].value &&
+				else if (grid[i][j+2].value%10  === grid[i+1][j+2].value %10 &&
+					grid[i][j].value%10  === grid[i+2][j+2].value %10 &&
+					grid[i][j].value%10  === grid[i + 2][j].value %10 &&
+					grid[i][j].value%10  === grid[i + 2][j+1].value %10 &&
 					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					if(isSound)
@@ -691,10 +833,10 @@ function checkForMatches() {
 					//console.log("matchfound" + matchFound);
 				}
 				
-				else if (grid[i][j+1].value === grid[i+1][j+1].value &&
-					grid[i][j].value === grid[i+2][j+1].value &&
-					grid[i][j].value === grid[i + 2][j].value &&
-					grid[i][j].value === grid[i + 2][j+2].value &&
+				else if (grid[i][j+1].value %10 === grid[i+1][j+1].value %10 &&
+					grid[i][j].value%10  === grid[i+2][j+1].value %10 &&
+					grid[i][j].value%10  === grid[i + 2][j].value %10 &&
+					grid[i][j].value%10  === grid[i + 2][j+2].value%10  &&
 					grid[i][j].value > 0) {
 					//we have a match of 3 across and down...
 					if(isSound)
@@ -728,10 +870,10 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 4; i++) {
 			for (var j = 0; j < 8; j++) {
-				if (grid[i][j].value === grid[i + 1][j].value &&
-					grid[i][j].value === grid[i + 2][j].value &&
-					grid[i][j].value === grid[i + 3][j].value &&
-					grid[i][j].value === grid[i + 4][j].value &&
+				if (grid[i][j].value%10  === grid[i + 1][j].value%10  &&
+					grid[i][j].value %10 === grid[i + 2][j].value%10  &&
+					grid[i][j].value%10  === grid[i + 3][j].value%10  &&
+					grid[i][j].value%10  === grid[i + 4][j].value%10  &&
 					grid[i][j].value > 0) {
 					//we have a match of 5 down
 					//console.log("We have a 5 match down");
@@ -766,10 +908,10 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 4; j++) {
-				if (grid[i][j].value === grid[i][j + 1].value &&
-					grid[i][j].value === grid[i][j + 2].value &&
-					grid[i][j].value === grid[i][j + 3].value &&
-					grid[i][j].value === grid[i][j + 4].value &&
+				if (grid[i][j].value%10  === grid[i][j + 1].value %10 &&
+					grid[i][j].value%10  === grid[i][j + 2].value %10 &&
+					grid[i][j].value%10  === grid[i][j + 3].value %10 &&
+					grid[i][j].value%10  === grid[i][j + 4].value %10 &&
 					grid[i][j].value > 0) {
 					//we have a match of 5 across
 					//console.log("We have a 5 match across");
@@ -805,11 +947,10 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 5; i++) {
 			for (var j = 0; j < 8; j++) {
-				if (grid[i][j].value === grid[i + 1][j].value &&
-					grid[i][j].value === grid[i + 2][j].value &&
-					grid[i][j].value === grid[i + 3][j].value &&
+				if (grid[i][j].value %10 === grid[i + 1][j].value %10 &&
+					grid[i][j].value %10 === grid[i + 2][j].value %10 &&
+					grid[i][j].value %10 === grid[i + 3][j].value %10 &&
 					grid[i][j].value > 0) {
-					//we have a match of 5 down
 					//console.log("We have a 4 match down");
 					//console.log("Starting at i  j: " + i + "   " + j);
 					if(isSound)
@@ -827,6 +968,7 @@ function checkForMatches() {
 					matchDown = true;
 					thereWasAMatch = true;
 					matchFound = true;
+					bonus2 = true;
 					if(timeX<460-25)
 					{
 						timeX+=25;
@@ -839,11 +981,10 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 5; j++) {
-				if (grid[i][j].value === grid[i][j + 1].value &&
-					grid[i][j].value === grid[i][j + 2].value &&
-					grid[i][j].value === grid[i][j + 3].value &&
+				if (grid[i][j].value%10  === grid[i][j + 1].value %10 &&
+					grid[i][j].value%10  === grid[i][j + 2].value%10  &&
+					grid[i][j].value%10  === grid[i][j + 3].value%10  &&
 					grid[i][j].value > 0) {
-					//we have a match of 5 across
 					//console.log("We have a 4 match across");
 					//console.log("Starting at i  j: " + i + "   " + j);
 					if(isSound)
@@ -862,6 +1003,7 @@ function checkForMatches() {
 					matchAcross = true;
 					thereWasAMatch = true;
 					matchFound = true;
+					bonus3 = true;
 					if(timeX<460-25)
 					{
 						timeX+=25;
@@ -874,12 +1016,35 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 6; i++) {
 			for (var j = 0; j < 8; j++) {
-				if (grid[i][j].value === grid[i + 1][j].value &&
-					grid[i][j].value === grid[i + 2][j].value &&
+				if (grid[i][j].value%10  === grid[i + 1][j].value %10 &&
+					grid[i][j].value%10  === grid[i + 2][j].value %10 &&
 					grid[i][j].value > 0) {
-					//we have a match of 5 down
 					//console.log("We have a 3 match down");
 					//console.log("Starting at i  j: " + i + "   " + j);
+					if(grid[i][j].value > 19 && grid[i][j].value < 30)
+					{
+						deleteColFromBoard(j);
+					}
+					if(grid[i+1][j].value > 19 && grid[i+1][j].value < 30)
+					{
+						deleteColFromBoard(j);
+					}
+					if(grid[i+2][j].value > 19 && grid[i+2][j].value < 30)
+					{
+						deleteColFromBoard(j);
+					}
+					if(grid[i][j].value > 29 && grid[i][j].value < 40)
+					{
+						deleteRowFromBoard(i);
+					}
+					if(grid[i+1][j].value > 29 && grid[i+1][j].value < 40)
+					{
+						deleteRowFromBoard(i+1);
+					}
+					if(grid[i+2][j].value > 29 && grid[i+2][j].value < 40)
+					{
+						deleteRowFromBoard(i+2);
+					}
 					if(isSound)
 					{
 					playSound1();
@@ -907,12 +1072,36 @@ function checkForMatches() {
 	if (noMatchFound) {
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 6; j++) {
-				if (grid[i][j].value === grid[i][j + 1].value &&
-					grid[i][j].value === grid[i][j + 2].value &&
+				if (grid[i][j].value %10 === grid[i][j + 1].value %10 &&
+					grid[i][j].value %10 === grid[i][j + 2].value %10 &&
 					grid[i][j].value > 0) {
 					//we have a match of 3 across
 					//console.log("We have a 3 match across");
 					//console.log("Starting at i  j: " + i + "   " + j);
+					if(grid[i][j].value > 19 && grid[i][j].value < 30)
+					{
+						deleteColFromBoard(j);
+					}
+					if(grid[i][j+1].value > 19 && grid[i][j+1].value < 30)
+					{
+						deleteColFromBoard(j+1);
+					}
+					if(grid[i][j+2].value > 19 && grid[i][j+2].value < 30)
+					{
+						deleteColFromBoard(j+2);
+					}
+					if(grid[i][j].value > 29 && grid[i][j].value < 40)
+					{
+						deleteRowFromBoard(i);
+					}
+					if(grid[i][j+1].value > 29 && grid[i][j+1].value < 40)
+					{
+						deleteRowFromBoard(i);
+					}
+					if(grid[i][j+2].value > 29 && grid[i][j+2].value < 40)
+					{
+						deleteRowFromBoard(i);
+					}
 					if(isSound)
 					{
 					playSound1();
@@ -1091,15 +1280,8 @@ function drawBoard() {
 		{
 			mouseIsDown = false;
 			score = 0;
-			timeX = 460;
-			for (var i = 0; i < 8; i++) {
-			for (var j = 0; j < 8; j++) {
-				var v = getRandomInt(1, 5);
-				var x = (345 + (i * 60));
-				var y = (40 + (j * 60));
-				grid[i][j] = new gridObject(x, y, false, v, false);
-			}
-			}
+			//timeX = 460;
+			resetBoard();
 		}
 	}
 	else
@@ -1220,6 +1402,9 @@ function time() {
 	ctx.beginPath();
 	ctx.rect(320, 540, timeX, 20);
 	ctx.stroke();
+	ctx.font = "20px Times New Roman";
+	ctx.fillText(timeX, 335, 557);
+	
 }
 
 function drawOptionsScreen()
@@ -1355,6 +1540,7 @@ function draw() {
 		if(score >= levels[level-1].score)
 		{
 			level++;
+			resetBoard();
 		}
 		if (timeX <= 0) {
 			timeX = 0;
@@ -1379,8 +1565,10 @@ function draw() {
 				ctx.beginPath();
 				if(mouseIsDown)
 				{
+					level = 1;
 					timeX = levels[level-1].time;
 					score = 0;
+					resetBoard();
 				}
 			}
 			else
