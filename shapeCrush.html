@@ -1541,6 +1541,7 @@ function draw() {
 		{
 			level++;
 			resetBoard();
+			start();
 		}
 		if (timeX <= 0) {
 			timeX = 0;
@@ -1567,8 +1568,10 @@ function draw() {
 				{
 					level = 1;
 					timeX = levels[level-1].time;
+					console.log("Setting timeX to: " + timeX);
 					score = 0;
 					resetBoard();
+					start();
 				}
 			}
 			else
